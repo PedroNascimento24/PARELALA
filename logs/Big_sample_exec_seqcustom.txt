@@ -1,0 +1,1 @@
+Input: Big_sample, SeqCustom, AvgTime: 0.001086549 s

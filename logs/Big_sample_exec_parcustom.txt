@@ -1,0 +1,6 @@
+Input: Big_sample, Threads: 1, ParCustom, AvgTime: 0.001115274 s
+Input: Big_sample, Threads: 2, ParCustom, AvgTime: 0.001393358 s
+Input: Big_sample, Threads: 4, ParCustom, AvgTime: 0.001610648 s
+Input: Big_sample, Threads: 8, ParCustom, AvgTime: 0.001882990 s
+Input: Big_sample, Threads: 16, ParCustom, AvgTime: 0.002418142 s
+Input: Big_sample, Threads: 32, ParCustom, AvgTime: 0.003284274 s
