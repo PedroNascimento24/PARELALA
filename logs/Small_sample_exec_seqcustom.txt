@@ -1,1 +1,1 @@
-Input: Small_sample, SeqCustom, AvgTime: 0.000000706 s
+Input: Small_sample, SeqCustom, AvgTime: 0.000000657 s

@@ -1,42 +1,7 @@
 // jobshop_par_custom.c
-// Custom parallel job shop scheduler (logic equivalent, all new names)
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+// Custom parallel job shop scheduler using parallel greedy heuristic
+#include "jobshop_common.h"
 #include <omp.h>
-#include <time.h>
-#ifdef _WIN32
-#include <direct.h>
-#include <windows.h>
-#endif
-
-#define JMAX 100
-#define MMAX 100
-#define OPMAX 100
-#define LOGMAX 10000
-#define TMAX 32
-
-typedef struct {
-    int mach;
-    int len;
-    int stime;
-} Step;
-
-typedef struct {
-    int jid;
-    int oid;
-    double tstart;
-    double tspan;
-} ThreadLog;
-
-typedef struct {
-    int njobs;
-    int nmachs;
-    int nops;
-    Step **plan; // dynamically allocated [njobs][nops]
-    ThreadLog **tlogs; // dynamically allocated [TMAX][LOGMAX]
-    int tlogc[TMAX];
-} Shop;
 
 void make_logs_dir() {
 #ifdef _WIN32
@@ -46,7 +11,7 @@ void make_logs_dir() {
 #endif
 }
 
-int load_problem(const char *fname, Shop *shop) {
+int load_problem_par(const char *fname, ParallelShop *shop) {
     FILE *f = fopen(fname, "r");
     if (!f) return 0;
     int r = fscanf(f, "%d %d", &shop->njobs, &shop->nmachs);
@@ -72,14 +37,14 @@ int load_problem(const char *fname, Shop *shop) {
     return 1;
 }
 
-void free_shop(Shop *shop) {
+void free_shop_par(ParallelShop *shop) {
     for (int j = 0; j < shop->njobs; j++) free(shop->plan[j]);
     free(shop->plan);
     for (int t = 0; t < TMAX; t++) free(shop->tlogs[t]);
     free(shop->tlogs);
 }
 
-void save_result(const char *fname, Shop *shop) {
+void save_result_par(const char *fname, ParallelShop *shop) {
     FILE *f = fopen(fname, "w");
     if (!f) return;
     int maxend = 0;
@@ -99,7 +64,7 @@ void save_result(const char *fname, Shop *shop) {
     fclose(f);
 }
 
-int find_slot(Shop *shop, int mach, int len, int estart) {
+int find_slot_par(ParallelShop *shop, int mach, int len, int estart) {
     int st = estart;
     while (1) {
         int et = st + len, ok = 1, nextst = st;
@@ -117,7 +82,7 @@ int find_slot(Shop *shop, int mach, int len, int estart) {
     }
 }
 
-int parallel_schedule(Shop *shop, int nth) {
+int parallel_schedule(ParallelShop *shop, int nth) {
     int total = shop->njobs * shop->nops;
     int done[JMAX] = {0}, nextst[JMAX] = {0}, assigned[JMAX][OPMAX], count = 0, iter = 0, maxit = total*10;
     for (int j = 0; j < shop->njobs; j++) {
@@ -140,7 +105,7 @@ int parallel_schedule(Shop *shop, int nth) {
                         int m = shop->plan[j][o].mach;
                         int l = shop->plan[j][o].len;
                         double t0 = omp_get_wtime(); // Start timing before scheduling logic
-                        int st = find_slot(shop, m, l, nextst[j]);
+                        int st = find_slot_par(shop, m, l, nextst[j]);
                         if (shop->plan[j][o].stime == -1) {
                             shop->plan[j][o].stime = st;
                             done[j]++;
@@ -182,13 +147,13 @@ int parallel_schedule(Shop *shop, int nth) {
     return (count == total);
 }
 
-void reset_plan(Shop *shop) {
+void reset_plan_par(ParallelShop *shop) {
     for (int j = 0; j < shop->njobs; j++)
         for (int o = 0; o < shop->nops; o++)
             shop->plan[j][o].stime = -1;
 }
 
-void dump_logs(Shop *shop, int nth, const char *basename) {
+void dump_logs_par(ParallelShop *shop, int nth, const char *basename) {
     make_logs_dir();
     char tfile[256], sfile[256];
     sprintf(tfile, "logs/%s_timing_parcustom_%d.txt", basename, nth);
@@ -231,8 +196,8 @@ int main(int argc, char *argv[]) {
     strcpy(base, fname);
     char *dot = strrchr(base, '.');
     if (dot) *dot = 0;
-    Shop shop;
-    if (!load_problem(iname, &shop)) return 1;
+    ParallelShop shop;
+    if (!load_problem_par(iname, &shop)) return 1;
     make_logs_dir();
     int total = shop.njobs * shop.nops;
     int nthr = nth;
@@ -246,7 +211,7 @@ int main(int argc, char *argv[]) {
     QueryPerformanceFrequency(&freq);
 #endif
     for (int i = 0; i < reps; i++) {
-        reset_plan(&shop);
+        reset_plan_par(&shop);
         if (i < reps-1) for (int t = 0; t < nthr; t++) shop.tlogc[t] = 0;
 #ifdef _WIN32
         QueryPerformanceCounter(&t0);
@@ -261,8 +226,8 @@ int main(int argc, char *argv[]) {
 #endif
     }
     double avg = ttot/reps;
-    dump_logs(&shop, nthr, base);
-    save_result(oname, &shop);
+    dump_logs_par(&shop, nthr, base);
+    save_result_par(oname, &shop);
     char sumfile[256];
     sprintf(sumfile, "logs/%s_exec_parcustom.txt", base);
     FILE *fsum = fopen(sumfile, "a");
@@ -270,6 +235,6 @@ int main(int argc, char *argv[]) {
         fprintf(fsum, "Input: %s, Threads: %d, ParCustom, AvgTime: %.9f s\n", base, nthr, avg);
         fclose(fsum);
     }
-    free_shop(&shop);
+    free_shop_par(&shop);
     return 0;
 }

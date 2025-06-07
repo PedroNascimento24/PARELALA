@@ -1,41 +1,6 @@
 // jobshop_seq_custom.c
-// Custom sequential job shop scheduler (logic equivalent, all new names)
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <sys/stat.h>
-#ifdef _WIN32
-#include <direct.h>
-#include <windows.h>
-#endif
-
-#define JMAX 100
-#define MMAX 100
-#define OPMAX 100
-#define LOGMAX 10000
-
-typedef struct {
-    int mach;
-    int len;
-    int stime;
-} Step;
-
-typedef struct {
-    int jid;
-    int oid;
-    double tstart;
-    double tspan;
-} LogEntry;
-
-typedef struct {
-    int njobs;
-    int nmachs;
-    int nops;
-    Step plan[JMAX][OPMAX];
-    LogEntry logs[LOGMAX];
-    int nlogs;
-} Shop;
+// Custom sequential job shop scheduler using greedy earliest-start heuristic
+#include "jobshop_common.h"
 
 void make_logs_dir() {
 #ifdef _WIN32
@@ -45,7 +10,7 @@ void make_logs_dir() {
 #endif
 }
 
-int load_problem(const char *fname, Shop *shop) {
+int load_problem_seq(const char *fname, Shop *shop) {
     FILE *f = fopen(fname, "r");
     if (!f) return 0;
     fscanf(f, "%d %d", &shop->njobs, &shop->nmachs);
@@ -61,7 +26,7 @@ int load_problem(const char *fname, Shop *shop) {
     return 1;
 }
 
-void save_result(const char *fname, Shop *shop) {
+void save_result_seq(const char *fname, Shop *shop) {
     FILE *f = fopen(fname, "w");
     if (!f) return;
     int maxend = 0;
@@ -82,7 +47,7 @@ void save_result(const char *fname, Shop *shop) {
     fclose(f);
 }
 
-int find_slot(Shop *shop, int mach, int len, int estart) {
+int find_slot_seq(Shop *shop, int mach, int len, int estart) {
     int st = estart;
     while (1) {
         int et = st + len;
@@ -121,7 +86,7 @@ void greedy_schedule(Shop *shop) {
         int m = shop->plan[bestj][o].mach;
         int l = shop->plan[bestj][o].len;
         clock_t t0 = clock(); // Start timing before scheduling logic
-        int st = find_slot(shop, m, l, nextst[bestj]);
+        int st = find_slot_seq(shop, m, l, nextst[bestj]);
         shop->plan[bestj][o].stime = st;
         done[bestj]++;
         count++;
@@ -138,7 +103,7 @@ void greedy_schedule(Shop *shop) {
     }
 }
 
-void dump_logs(Shop *shop, const char *basename) {
+void dump_logs_seq(Shop *shop, const char *basename) {
     make_logs_dir();
     char tfile[256], sfile[256];
     sprintf(tfile, "logs/%s_timing_seqcustom.txt", basename);
@@ -177,7 +142,7 @@ int main(int argc, char *argv[]) {
     char *dot = strrchr(base, '.');
     if (dot) *dot = 0;
     Shop shop;
-    if (!load_problem(iname, &shop)) return 1;
+    if (!load_problem_seq(iname, &shop)) return 1;
     make_logs_dir();
     const int reps = 10000; // Increase repetitions for better timing
     LARGE_INTEGER freq, t0, t1;
@@ -193,9 +158,8 @@ int main(int argc, char *argv[]) {
         QueryPerformanceCounter(&t1);
         ttot += (double)(t1.QuadPart - t0.QuadPart) / freq.QuadPart;
     }
-    double avg = ttot/reps;
-    dump_logs(&shop, base);
-    save_result(oname, &shop);
+    double avg = ttot/reps;    dump_logs_seq(&shop, base);
+    save_result_seq(oname, &shop);
     char sumfile[256];
     sprintf(sumfile, "logs/%s_exec_seqcustom.txt", base);
     FILE *fsum = fopen(sumfile, "a");

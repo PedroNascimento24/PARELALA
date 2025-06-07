@@ -50,12 +50,12 @@ Write-Host "Running parallel: Data/Big_sample.jss -> Output/Big_parcustom_1.txt 
 Write-Host "Running parallel: Data/Big_sample.jss -> Output/Big_parcustom_2.txt (Threads: 2)"
 .\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_2.txt 2
 Write-Host "Running parallel: Data/Big_sample.jss -> Output/Big_parcustom_4.txt (Threads: 4)"
-.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_4.txt 4
+#.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_4.txt 4
 Write-Host "Running parallel: Data/Big_sample.jss -> Output/Big_parcustom_8.txt (Threads: 8)"
-.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_8.txt 8
+#.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_8.txt 8
 Write-Host "Running parallel: Data/Big_sample.jss -> Output/Big_parcustom_16.txt (Threads: 16)"
-.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_16.txt 16
+#.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_16.txt 16
 Write-Host "Running parallel: Data/Big_sample.jss -> Output/Big_parcustom_32.txt (Threads: 32)"
-.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_32.txt 32
+#.\jobshop_par_custom.exe Data/Big_sample.jss Output/Big_parcustom_32.txt 32
 
 Write-Host "All done!"
