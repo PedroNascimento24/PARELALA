@@ -19,7 +19,7 @@
 #define JMAX 100        // Maximum number of jobs
 #define MMAX 100        // Maximum number of machines
 #define OPMAX 100       // Maximum number of operations per job
-#define LOGMAX 10000    // Maximum number of log entries
+#define LOGMAX 1000     // Maximum number of log entries (reduced to avoid stack overflow)
 #define TMAX 32         // Maximum number of threads (for parallel version)
 
 // Operation/Step structure
@@ -55,13 +55,13 @@ typedef struct {
     int nlogs;                    // Number of log entries
 } Shop;
 
-// Shop structure for parallel version
+// Shop structure for parallel version (using static arrays to comply with PDF restrictions)
 typedef struct {
     int njobs;                    // Number of jobs
     int nmachs;                   // Number of machines
     int nops;                     // Number of operations per job
-    Step **plan;                  // Dynamic allocation: [job][operation]
-    ThreadLog **tlogs;            // Dynamic allocation: [thread][log_entry]
+    Step plan[JMAX][OPMAX];       // Static allocation: [job][operation]
+    ThreadLog tlogs[TMAX][LOGMAX]; // Static allocation: [thread][log_entry]
     int tlogc[TMAX];             // Log count per thread
 } ParallelShop;
 
@@ -80,10 +80,9 @@ void dump_logs_seq(Shop *shop, const char *basename);
 // Parallel version functions
 int load_problem_par(const char *filename, ParallelShop *shop);
 void save_result_par(const char *filename, ParallelShop *shop);
-int parallel_schedule(ParallelShop *shop, int num_threads);
+int parallel_schedule(ParallelShop *shop, int num_threads, int should_log);
 void reset_plan_par(ParallelShop *shop);
 void dump_logs_par(ParallelShop *shop, int num_threads, const char *basename);
-void free_shop_par(ParallelShop *shop);
 
 // Common utility functions
 char* extract_basename(const char *filepath);

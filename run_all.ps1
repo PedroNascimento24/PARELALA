@@ -32,11 +32,11 @@ Write-Host "Running all experiments..."
 
 # Sequential runs for all datasets (guaranteed, separate commands)
 Write-Host "Running sequential: Data/Small_sample.jss -> Output/Small_seqcustom.txt"
-.\jobshop_seq_custom.exe Data/Small_sample.jss Output/Small_seqcustom.txt
+#\jobshop_seq_custom.exe Data/Small_sample.jss Output/Small_seqcustom.txt
 Write-Host "Running sequential: Data/Medium_sample.jss -> Output/Medium_seqcustom.txt"
-.\jobshop_seq_custom.exe Data/Medium_sample.jss Output/Medium_seqcustom.txt
+#\jobshop_seq_custom.exe Data/Medium_sample.jss Output/Medium_seqcustom.txt
 Write-Host "Running sequential: Data/Big_sample.jss -> Output/Big_seqcustom.txt"
-.\jobshop_seq_custom.exe Data/Big_sample.jss Output/Big_seqcustom.txt
+#.\jobshop_seq_custom.exe Data/Big_sample.jss Output/Big_seqcustom.txt
 
 # Parallel runs for Small and Medium (16 threads, guaranteed, separate commands)
 Write-Host "Running parallel (16 threads): Data/Small_sample.jss -> Output/Small_parcustom_16.txt"

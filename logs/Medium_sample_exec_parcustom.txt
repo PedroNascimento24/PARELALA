@@ -1,1 +1,0 @@
-Input: Medium_sample, Threads: 8, ParCustom, AvgTime: 0.000140746 s
