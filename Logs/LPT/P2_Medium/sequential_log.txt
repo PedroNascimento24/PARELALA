@@ -1,0 +1,16 @@
+﻿=== LPT SEQUENTIAL ALGORITHM RESULTS ===
+Dataset: P2_Medium (6x6)
+Input File: Data/2_Medium_sample.jss
+Output File: Result\LPT\P2_Medium\sequential_result.txt
+Execution Time: 51.44ms
+Makespan: 79
+Operation Distribution: Jobs: 6, Total Ops: 42, Avg Ops/Thread: 42
+Algorithm: LPT Sequential
+Timestamp: 06/08/2025 12:01:42
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan): 79 time units
+Algorithm efficiency: Sequential processing
+All operations executed in single thread
+Jobs processed: 6
+Total operations: 42

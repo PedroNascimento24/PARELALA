@@ -1,7 +1,7 @@
 ﻿========================================================================
 === ULTIMATE JOB SHOP SCHEDULING ANALYSIS REPORT ===
 ========================================================================
-Generated: 06/08/2025 11:54:22
+Generated: 06/08/2025 13:48:07
 Configuration: analysis_config.json
 Total Tests Executed: 6
 
@@ -10,12 +10,12 @@ Total Tests Executed: 6
 --- P1_Small Results ---
 Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
 ----------------------------------------------------------------------------------------------------
-Greedy              Parallel_1threads   20          285.5       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-Greedy              Parallel_2threads   11          630.1       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
-Greedy              Sequential          12          31.5        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-LPT                 Sequential          14          32.5        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-MOR                 Sequential          11          28.8        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-SPT                 Sequential          11          30.9        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+Greedy              Parallel_1threads   20          274.7       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+Greedy              Parallel_2threads   11          714.9       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+Greedy              Sequential          12          29.8        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+LPT                 Sequential          14          31.7        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+MOR                 Sequential          11          30.3        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+SPT                 Sequential          11          30.4        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
 
 === PERFORMANCE INSIGHTS ===
 

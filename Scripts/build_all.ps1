@@ -23,7 +23,7 @@ try {
 
 # Clean up old executables
 Write-Host "`nCleaning up old executables..." -ForegroundColor White
-Get-ChildItem -Path "Algorithms" -Filter "*.exe" -Recurse | Remove-Item -Force -ErrorAction SilentlyContinue
+Get-ChildItem -Path "../Algorithms" -Filter "*.exe" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
 Write-Host "SUCCESS: Old executables removed" -ForegroundColor Green
 
 # Build counters
@@ -39,7 +39,7 @@ Write-Host "=========================================" -ForegroundColor Magenta
 # Build Greedy Sequential
 $currentBuild++
 Write-Host "`n[$currentBuild/$totalBuilds] Building Greedy Sequential Algorithm..." -ForegroundColor White
-Push-Location "Algorithms/Greedy"
+Push-Location "../Algorithms/Greedy"
 $result = gcc -o jobshop_seq_greedy.exe jobshop_seq_greedy.c -std=c99 -O2 -Wall 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "SUCCESS: Greedy Sequential compiled successfully" -ForegroundColor Green
@@ -63,9 +63,16 @@ if ($LASTEXITCODE -eq 0) {
     $failedBuilds++
 }
 
+Pop-Location
+
+Write-Host "`n=========================================" -ForegroundColor Magenta
+Write-Host "=== BUILDING HEURISTIC ALGORITHMS ===" -ForegroundColor Magenta
+Write-Host "=========================================" -ForegroundColor Magenta
+
 # Build SPT Sequential
 $currentBuild++
 Write-Host "`n[$currentBuild/$totalBuilds] Building SPT Sequential Algorithm..." -ForegroundColor White
+Push-Location "../Algorithms/SPT"
 $result = gcc -o jobshop_seq_spt.exe jobshop_seq_spt.c -std=c99 -O2 -Wall 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "SUCCESS: SPT Sequential compiled successfully" -ForegroundColor Green
@@ -75,10 +82,12 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host $result -ForegroundColor Red
     $failedBuilds++
 }
+Pop-Location
 
 # Build LPT Sequential
 $currentBuild++
 Write-Host "`n[$currentBuild/$totalBuilds] Building LPT Sequential Algorithm..." -ForegroundColor White
+Push-Location "../Algorithms/LPT"
 $result = gcc -o jobshop_seq_lpt.exe jobshop_seq_lpt.c -std=c99 -O2 -Wall 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "SUCCESS: LPT Sequential compiled successfully" -ForegroundColor Green
@@ -88,10 +97,12 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host $result -ForegroundColor Red
     $failedBuilds++
 }
+Pop-Location
 
 # Build MOR Sequential
 $currentBuild++
 Write-Host "`n[$currentBuild/$totalBuilds] Building MOR Sequential Algorithm..." -ForegroundColor White
+Push-Location "../Algorithms/MOR"
 $result = gcc -o jobshop_seq_mor.exe jobshop_seq_mor.c -std=c99 -O2 -Wall 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "SUCCESS: MOR Sequential compiled successfully" -ForegroundColor Green
@@ -101,7 +112,6 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host $result -ForegroundColor Red
     $failedBuilds++
 }
-
 Pop-Location
 
 # Future algorithms (placeholders for when implemented)
@@ -126,27 +136,27 @@ Write-Host "  -> Success rate: $successRate%" -ForegroundColor White
 
 # Verify executables exist
 Write-Host "`nVerifying built executables:" -ForegroundColor White
-$seqExe = ".\Algorithms\Greedy\jobshop_seq_greedy.exe"
-$parExe = ".\Algorithms\Greedy\jobshop_par_greedy.exe"
+$executables = @(
+    @{Path="../Algorithms/Greedy/jobshop_seq_greedy.exe"; Name="Sequential Greedy"},
+    @{Path="../Algorithms/Greedy/jobshop_par_greedy.exe"; Name="Parallel Greedy"},
+    @{Path="../Algorithms/SPT/jobshop_seq_spt.exe"; Name="SPT Sequential"},
+    @{Path="../Algorithms/LPT/jobshop_seq_lpt.exe"; Name="LPT Sequential"},
+    @{Path="../Algorithms/MOR/jobshop_seq_mor.exe"; Name="MOR Sequential"}
+)
 
-if (Test-Path $seqExe) {
-    $seqSize = [math]::Round((Get-Item $seqExe).Length / 1KB, 1)
-    Write-Host "  -> SUCCESS: Sequential Greedy: $seqExe ($seqSize KB)" -ForegroundColor Green
-} else {
-    Write-Host "  -> ERROR: Sequential Greedy: Missing!" -ForegroundColor Red
-}
-
-if (Test-Path $parExe) {
-    $parSize = [math]::Round((Get-Item $parExe).Length / 1KB, 1)
-    Write-Host "  -> SUCCESS: Parallel Greedy: $parExe ($parSize KB)" -ForegroundColor Green
-} else {
-    Write-Host "  -> ERROR: Parallel Greedy: Missing!" -ForegroundColor Red
+foreach ($exe in $executables) {
+    if (Test-Path $exe.Path) {
+        $size = [math]::Round((Get-Item $exe.Path).Length / 1KB, 1)
+        Write-Host "  -> SUCCESS: $($exe.Name): $($exe.Path) ($size KB)" -ForegroundColor Green
+    } else {
+        Write-Host "  -> ERROR: $($exe.Name): Missing!" -ForegroundColor Red
+    }
 }
 
 # Final status
 if ($failedBuilds -eq 0) {
     Write-Host "`nALL BUILDS SUCCESSFUL!" -ForegroundColor Green
-    Write-Host "You can now run .\Scripts\run_all.ps1 to execute comprehensive tests." -ForegroundColor Green
+    Write-Host "You can now run .\Scripts\ultimate_analysis.ps1 to execute comprehensive tests." -ForegroundColor Green
     exit 0
 } elseif ($successfulBuilds -gt 0) {
     Write-Host "`nSOME BUILDS FAILED" -ForegroundColor Yellow

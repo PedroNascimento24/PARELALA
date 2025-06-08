@@ -30,16 +30,15 @@ $defaultConfig = @{
     }
     
     # All available algorithms
-    algorithms = @{
-        Greedy = @{
+    algorithms = @{        Greedy = @{
             description = "Earliest start time greedy heuristic"
             sequential = @{
                 enabled = $true
-                executable = "Algorithms\Greedy\jobshop_seq_greedy.exe"
+                executable = "..\Algorithms\Greedy\jobshop_seq_greedy.exe"
             }
             parallel = @{
                 enabled = $true
-                executable = "Algorithms\Greedy\jobshop_par_greedy.exe"
+                executable = "..\Algorithms\Greedy\jobshop_par_greedy.exe"
                 threadCounts = @(1, 2, 4, 8, 16)  # Expanded thread testing
             }
         }
@@ -47,25 +46,24 @@ $defaultConfig = @{
             description = "Shortest Processing Time first heuristic"
             sequential = @{
                 enabled = $true
-                executable = "Algorithms\Greedy\jobshop_seq_spt.exe"
+                executable = "..\Algorithms\SPT\jobshop_seq_spt.exe"
             }
         }
         LPT = @{
             description = "Longest Processing Time first heuristic"
             sequential = @{
                 enabled = $true
-                executable = "Algorithms\Greedy\jobshop_seq_lpt.exe"
+                executable = "..\Algorithms\LPT\jobshop_seq_lpt.exe"
             }
         }
         MOR = @{
             description = "Most Operations Remaining priority heuristic"
             sequential = @{
                 enabled = $true
-                executable = "Algorithms\Greedy\jobshop_seq_mor.exe"
+                executable = "..\Algorithms\MOR\jobshop_seq_mor.exe"
             }
         }
     }
-    
     # Dataset configurations with expected performance hints
     datasets = @(
         @{Name="1_Small_sample"; Size="3x3"; Category="P1_Small"; ExpectedTime="<100ms"}
@@ -152,13 +150,15 @@ foreach ($algorithmName in $config.algorithms.PSObject.Properties.Name) {
     $algorithm = $config.algorithms.$algorithmName
     
     if ($algorithm.sequential -and $algorithm.sequential.enabled) {
-        if (!(Test-Path $algorithm.sequential.executable)) {
+        $execPath = $algorithm.sequential.executable
+        if (!(Test-Path $execPath)) {
             $missingExecutables += $algorithm.sequential.executable
         }
     }
     
     if ($algorithm.parallel -and $algorithm.parallel.enabled) {
-        if (!(Test-Path $algorithm.parallel.executable)) {
+        $execPath = $algorithm.parallel.executable
+        if (!(Test-Path $execPath)) {
             $missingExecutables += $algorithm.parallel.executable
         }
     }
@@ -346,9 +346,8 @@ foreach ($algorithmName in $config.algorithms.PSObject.Properties.Name) {
         foreach ($dataset in $config.datasets) {
             $testCount++
             Write-Host "`n[$testCount/$totalTests] $algorithmName Sequential: $($dataset.Category) ($($dataset.Size))" -ForegroundColor White
-            
-            # Verify dataset file exists
-            if (!(Test-Path "Data/$($dataset.Name).jss")) {
+              # Verify dataset file exists
+            if (!(Test-Path "../Data/$($dataset.Name).jss")) {
                 Write-Host "  ERROR: Dataset file not found!" -ForegroundColor Red
                 continue
             }
@@ -360,7 +359,7 @@ foreach ($algorithmName in $config.algorithms.PSObject.Properties.Name) {
             # Run algorithm
             Write-Host "  -> Executing $algorithmName sequential algorithm..." -ForegroundColor Gray
             $startTime = Get-Date
-            & ".\$($algorithm.sequential.executable)" "Data/$($dataset.Name).jss" $resultFile 2>$null
+            & ".\$($algorithm.sequential.executable)" "../Data/$($dataset.Name).jss" $resultFile 2>$null
             $endTime = Get-Date
             $duration = ($endTime - $startTime).TotalMilliseconds
             
@@ -416,10 +415,9 @@ Total operations: $($opDistribution.TotalOps)
     # Run parallel tests if enabled
     if ($algorithm.parallel -and $algorithm.parallel.enabled) {
         Write-Host "`n--- Testing $algorithmName Parallel ---" -ForegroundColor Yellow
-        
-        foreach ($dataset in $config.datasets) {
+          foreach ($dataset in $config.datasets) {
             # Verify dataset file exists
-            if (!(Test-Path "Data/$($dataset.Name).jss")) {
+            if (!(Test-Path "../Data/$($dataset.Name).jss")) {
                 Write-Host "  ERROR: Dataset file not found!" -ForegroundColor Red
                 continue
             }
@@ -430,12 +428,10 @@ Total operations: $($opDistribution.TotalOps)
                 
                 # Create output files
                 $resultFile = "Result\$algorithmName\$($dataset.Category)\parallel_${threads}threads_result.txt"
-                $logFile = "Logs\$algorithmName\$($dataset.Category)\parallel_${threads}threads_log.txt"
-                
-                # Run parallel algorithm
+                $logFile = "Logs\$algorithmName\$($dataset.Category)\parallel_${threads}threads_log.txt"                # Run parallel algorithm
                 Write-Host "  -> Executing $algorithmName parallel algorithm with $threads threads..." -ForegroundColor Gray
                 $startTime = Get-Date
-                & ".\$($algorithm.parallel.executable)" "Data/$($dataset.Name).jss" $resultFile $threads 2>$null
+                & "$($algorithm.parallel.executable)" "../Data/$($dataset.Name).jss" $resultFile $threads 2>$null
                 $endTime = Get-Date
                 $duration = ($endTime - $startTime).TotalMilliseconds
                 

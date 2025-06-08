@@ -1,0 +1,16 @@
+﻿=== LPT SEQUENTIAL ALGORITHM RESULTS ===
+Dataset: P3_Large (25x25)
+Input File: Data/3_Big_sample.jss
+Output File: Result\LPT\P3_Large\sequential_result.txt
+Execution Time: 3507ms
+Makespan: 335
+Operation Distribution: Jobs: 25, Total Ops: 650, Avg Ops/Thread: 650
+Algorithm: LPT Sequential
+Timestamp: 06/08/2025 12:01:46
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan): 335 time units
+Algorithm efficiency: Sequential processing
+All operations executed in single thread
+Jobs processed: 25
+Total operations: 650
