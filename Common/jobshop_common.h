@@ -87,4 +87,10 @@ void dump_logs_par(ParallelShop *shop, int num_threads, const char *basename);
 // Common utility functions
 char* extract_basename(const char *filepath);
 
+// New utility functions for automatic folder routing
+const char* get_size_category(int njobs, int nmachs);
+void create_algorithm_dirs(const char* algorithm);
+void get_log_path(char* path, const char* algorithm, const char* size_category, const char* basename, const char* suffix);
+void get_result_path(char* path, const char* algorithm, const char* size_category, const char* basename);
+
 #endif // JOBSHOP_COMMON_H

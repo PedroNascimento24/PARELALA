@@ -1,0 +1,49 @@
+﻿========================================================================
+=== ULTIMATE JOB SHOP SCHEDULING ANALYSIS REPORT ===
+========================================================================
+Generated: 06/08/2025 11:49:30
+Configuration: analysis_config.json
+Total Tests Executed: 9
+
+=== ALGORITHM PERFORMANCE SUMMARY ===
+
+--- P1_Small Results ---
+Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
+----------------------------------------------------------------------------------------------------
+Greedy              Parallel_16threads  11          651.3       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 0.8
+Greedy              Parallel_1threads   20          283.7       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+Greedy              Parallel_2threads   11          691.7       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+Greedy              Parallel_4threads   11          434.8       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 3
+Greedy              Parallel_8threads   11          636         Jobs: 3, Total Ops: 12, Avg Ops/Thread: 1.5
+Greedy              Sequential          12          30.7        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+LPT                 Sequential          14          32.1        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+MOR                 Sequential          11          29.9        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+SPT                 Sequential          11          31          Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+
+=== PERFORMANCE INSIGHTS ===
+
+This report compares the performance of different scheduling algorithms:
+* Makespan: Lower values indicate better scheduling efficiency
+* Execution Time: Algorithm computational performance
+* Operation Distribution: How work is divided among threads (for parallel implementations)
+
+=== ALGORITHM DESCRIPTIONS ===
+* Greedy: Earliest start time heuristic
+* SPT: Shortest Processing Time first
+* LPT: Longest Processing Time first  
+* MOR: Most Operations Remaining priority
+
+=== FILES GENERATED ===
+* Results: Result/[Algorithm]/[Category]/
+* Logs: Logs/[Algorithm]/[Category]/
+* Configuration: analysis_config.json
+
+=== USAGE EXAMPLES ===
+.\ultimate_analysis.ps1                    # Run all enabled algorithms
+.\ultimate_analysis.ps1 -QuickTest         # Quick test with small dataset only
+.\ultimate_analysis.ps1 -AlgorithmFilter SPT # Run only SPT algorithm
+.\ultimate_analysis.ps1 -DatasetFilter Small # Run only small dataset
+.\ultimate_analysis.ps1 -CleanOnly         # Clean all previous results
+.\ultimate_analysis.ps1 -GenerateConfig    # Generate fresh config file
+
+========================================================================

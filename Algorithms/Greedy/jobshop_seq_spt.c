@@ -1,13 +1,24 @@
-// jobshop_seq_custom.c
-// Custom sequential job shop scheduler using greedy earliest-start heuristic
-#include "jobshop_common.h"
+// jobshop_seq_spt.c
+// Sequential job shop scheduler using Shortest Processing Time (SPT) heuristic
+#include "../../Common/jobshop_common.h"
 
-void make_logs_dir() {
-#ifdef _WIN32
-    _mkdir("logs");
-#else
-    mkdir("logs", 0777);
-#endif
+// Determine size category based on problem dimensions
+const char* get_size_category(int njobs, int nmachs) {
+    if (njobs <= 3 && nmachs <= 3) return "P1_Small";       // 3x3 = 9 ops
+    else if (njobs <= 6 && nmachs <= 6) return "P2_Medium"; // 6x6 = 36 ops  
+    else if (njobs <= 25 && nmachs <= 25) return "P3_Large"; // 25x25 = 625 ops
+    else if (njobs <= 50 && nmachs <= 20) return "P4_XLarge"; // 50x20 = 1000 ops
+    else return "P5_XXLarge"; // 100x20 = 2000 ops
+}
+
+// Generate log file path with algorithm and size organization
+void get_log_path(char* path, const char* algorithm, const char* size_category, const char* basename, const char* suffix) {
+    sprintf(path, "../../Logs/%s/%s/%s_%s.txt", algorithm, size_category, basename, suffix);
+}
+
+// Generate result file path with algorithm and size organization  
+void get_result_path(char* path, const char* algorithm, const char* size_category, const char* basename) {
+    sprintf(path, "../../Result/%s/%s/%s_spt_seq.txt", algorithm, size_category, basename);
 }
 
 int load_problem_seq(const char *fname, Shop *shop) {
@@ -27,6 +38,27 @@ int load_problem_seq(const char *fname, Shop *shop) {
 }
 
 void save_result_seq(const char *fname, Shop *shop) {
+    // Create directory structure first
+    char dir_path[512];
+    char *last_slash = strrchr(fname, '/');
+    char *last_bslash = strrchr(fname, '\\');
+    char *last_sep = (last_slash > last_bslash) ? last_slash : last_bslash;
+    
+    if (last_sep) {
+        strncpy(dir_path, fname, last_sep - fname);
+        dir_path[last_sep - fname] = '\0';
+        
+#ifdef _WIN32
+        char cmd[1024];
+        sprintf(cmd, "mkdir \"%s\" 2>nul", dir_path);
+        system(cmd);
+#else
+        char cmd[1024];
+        sprintf(cmd, "mkdir -p \"%s\"", dir_path);
+        system(cmd);
+#endif
+    }
+    
     FILE *f = fopen(fname, "w");
     if (!f) return;
     int maxend = 0;
@@ -39,7 +71,6 @@ void save_result_seq(const char *fname, Shop *shop) {
     fprintf(f, "%d\n", maxend);
     for (int j = 0; j < shop->njobs; j++) {
         for (int o = 0; o < shop->nops; o++) {
-            // Output: start,duration,machine
             fprintf(f, "%d,%d,%d ", shop->plan[j][o].stime, shop->plan[j][o].len, shop->plan[j][o].mach);
         }
         fprintf(f, "\n");
@@ -69,33 +100,42 @@ int find_slot_seq(Shop *shop, int mach, int len, int estart) {
     }
 }
 
-void greedy_schedule(Shop *shop) {
+// SPT Scheduling: Always select operation with shortest processing time
+void spt_schedule(Shop *shop) {
     int done[JMAX] = {0};
     int nextst[JMAX] = {0};
     int total = shop->njobs * shop->nops, count = 0;
     while (count < total) {
-        int bestj = -1, bestt = 999999;
+        int bestj = -1, besto = -1, bestlen = 999999;
+        
+        // Find the operation with shortest processing time among available operations
         for (int j = 0; j < shop->njobs; j++) {
-            if (done[j] < shop->nops && nextst[j] < bestt) {
-                bestt = nextst[j];
-                bestj = j;
+            if (done[j] < shop->nops) {
+                int o = done[j];
+                int len = shop->plan[j][o].len;
+                if (len < bestlen) {
+                    bestlen = len;
+                    bestj = j;
+                    besto = o;
+                }
             }
         }
+        
         if (bestj == -1) break;
-        int o = done[bestj];
-        int m = shop->plan[bestj][o].mach;
-        int l = shop->plan[bestj][o].len;
-        clock_t t0 = clock(); // Start timing before scheduling logic
+        
+        int m = shop->plan[bestj][besto].mach;
+        int l = shop->plan[bestj][besto].len;
+        clock_t t0 = clock();
         int st = find_slot_seq(shop, m, l, nextst[bestj]);
-        shop->plan[bestj][o].stime = st;
+        shop->plan[bestj][besto].stime = st;
         done[bestj]++;
         count++;
         if (done[bestj] < shop->nops) nextst[bestj] = st + l;
-        clock_t t1 = clock(); // End timing after scheduling logic
+        clock_t t1 = clock();
         double dt = ((double)(t1-t0))/CLOCKS_PER_SEC;
         if (shop->nlogs < LOGMAX) {
             shop->logs[shop->nlogs].jid = bestj;
-            shop->logs[shop->nlogs].oid = o;
+            shop->logs[shop->nlogs].oid = besto;
             shop->logs[shop->nlogs].tstart = ((double)t0)/CLOCKS_PER_SEC;
             shop->logs[shop->nlogs].tspan = dt;
             shop->nlogs++;
@@ -104,10 +144,26 @@ void greedy_schedule(Shop *shop) {
 }
 
 void dump_logs_seq(Shop *shop, const char *basename) {
-    make_logs_dir();
-    char tfile[256], sfile[256];
-    sprintf(tfile, "logs/%s_timing_seqcustom.txt", basename);
-    sprintf(sfile, "logs/%s_sequence_seqcustom.txt", basename);
+    const char* algorithm = "SPT";
+    const char* size_category = get_size_category(shop->njobs, shop->nmachs);
+    
+    char tfile[512], sfile[512], dir_path[512];
+    
+    // Create directory structure
+    sprintf(dir_path, "../../Logs/%s/%s", algorithm, size_category);
+#ifdef _WIN32
+    char cmd[1024];
+    sprintf(cmd, "mkdir \"%s\" 2>nul", dir_path);
+    system(cmd);
+#else
+    char cmd[1024];
+    sprintf(cmd, "mkdir -p \"%s\"", dir_path);
+    system(cmd);
+#endif
+    
+    get_log_path(tfile, algorithm, size_category, basename, "timing_seqspt");
+    get_log_path(sfile, algorithm, size_category, basename, "sequence_seqspt");
+    
     FILE *ft = fopen(tfile, "w");
     if (!ft) return;
     fprintf(ft, "TotalOps | TotalTime(s) | AvgTimePerOp(s)\n");
@@ -141,10 +197,18 @@ int main(int argc, char *argv[]) {
     strcpy(base, fname);
     char *dot = strrchr(base, '.');
     if (dot) *dot = 0;
+    
     Shop shop;
     if (!load_problem_seq(iname, &shop)) return 1;
-    make_logs_dir();
-    const int reps = 10000; // Increase repetitions for better timing
+    
+    // Auto-route output to appropriate folders based on problem size
+    const char* algorithm = "SPT";
+    const char* size_category = get_size_category(shop.njobs, shop.nmachs);
+    
+    char auto_result_path[512];
+    get_result_path(auto_result_path, algorithm, size_category, base);
+    
+    const int reps = 10000;
     LARGE_INTEGER freq, t0, t1;
     QueryPerformanceFrequency(&freq);
     double ttot = 0.0;
@@ -154,17 +218,29 @@ int main(int argc, char *argv[]) {
                 shop.plan[j][o].stime = -1;
         if (i < reps-1) shop.nlogs = 0;
         QueryPerformanceCounter(&t0);
-        greedy_schedule(&shop);
+        spt_schedule(&shop);
         QueryPerformanceCounter(&t1);
         ttot += (double)(t1.QuadPart - t0.QuadPart) / freq.QuadPart;
     }
-    double avg = ttot/reps;    dump_logs_seq(&shop, base);
+    double avg = ttot/reps;
+    
+    dump_logs_seq(&shop, base);
+    
+    // Save to both user-specified path and auto-routed path
     save_result_seq(oname, &shop);
-    char sumfile[256];
-    sprintf(sumfile, "logs/%s_exec_seqcustom.txt", base);
+    save_result_seq(auto_result_path, &shop);
+    
+    char sumfile[512], dir_path[512];
+    sprintf(dir_path, "../../Logs/%s/%s", algorithm, size_category);
+#ifdef _WIN32
+    char cmd[1024];
+    sprintf(cmd, "mkdir \"%s\" 2>nul", dir_path);
+    system(cmd);
+#endif
+    sprintf(sumfile, "../../Logs/%s/%s/%s_exec_seqspt.txt", algorithm, size_category, base);
     FILE *fsum = fopen(sumfile, "a");
     if (fsum) {
-        fprintf(fsum, "Input: %s, SeqCustom, AvgTime: %.9f s\n", base, avg);
+        fprintf(fsum, "Input: %s, SeqSPT, AvgTime: %.9f s\n", base, avg);
         fclose(fsum);
     }
     return 0;

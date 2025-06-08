@@ -1,14 +1,23 @@
-// jobshop_par_custom.c
-// Custom parallel job shop scheduler using parallel greedy heuristic
-#include "jobshop_common.h"
+// jobshop_par_greedy.c
+// Parallel job shop scheduler using parallel greedy heuristic
+#include "../../Common/jobshop_common.h"
 #include <omp.h>
 
-void make_logs_dir() {
-#ifdef _WIN32
-    _mkdir("logs");
-#else
-    system("mkdir -p logs");
-#endif
+// Helper functions (shared with sequential version)
+const char* get_size_category(int njobs, int nmachs) {
+    if (njobs <= 3 && nmachs <= 3) return "P1_Small";       // 3x3 = 9 ops
+    else if (njobs <= 6 && nmachs <= 6) return "P2_Medium"; // 6x6 = 36 ops  
+    else if (njobs <= 25 && nmachs <= 25) return "P3_Large"; // 25x25 = 625 ops
+    else if (njobs <= 50 && nmachs <= 20) return "P4_XLarge"; // 50x20 = 1000 ops
+    else return "P5_XXLarge"; // 100x20 = 2000 ops
+}
+
+void get_log_path_par(char* path, const char* algorithm, const char* size_category, const char* basename, const char* suffix, int nth) {
+    sprintf(path, "../../Logs/%s/%s/%s_%s_%d.txt", algorithm, size_category, basename, suffix, nth);
+}
+
+void get_result_path_par(char* path, const char* algorithm, const char* size_category, const char* basename, int nth) {
+    sprintf(path, "../../Result/%s/%s/%s_greedy_par_%d.txt", algorithm, size_category, basename, nth);
 }
 
 int load_problem_par(const char *fname, ParallelShop *shop) {
@@ -36,6 +45,27 @@ int load_problem_par(const char *fname, ParallelShop *shop) {
 
 
 void save_result_par(const char *fname, ParallelShop *shop) {
+    // Create directory structure first
+    char dir_path[512];
+    char *last_slash = strrchr(fname, '/');
+    char *last_bslash = strrchr(fname, '\\');
+    char *last_sep = (last_slash > last_bslash) ? last_slash : last_bslash;
+    
+    if (last_sep) {
+        strncpy(dir_path, fname, last_sep - fname);
+        dir_path[last_sep - fname] = '\0';
+        
+#ifdef _WIN32
+        char cmd[1024];
+        sprintf(cmd, "mkdir \"%s\" 2>nul", dir_path);
+        system(cmd);
+#else
+        char cmd[1024];
+        sprintf(cmd, "mkdir -p \"%s\"", dir_path);
+        system(cmd);
+#endif
+    }
+    
     FILE *f = fopen(fname, "w");
     if (!f) return;
     int maxend = 0;
@@ -146,10 +176,26 @@ void reset_plan_par(ParallelShop *shop) {
 }
 
 void dump_logs_par(ParallelShop *shop, int nth, const char *basename) {
-    make_logs_dir();
-    char tfile[256], sfile[256];
-    sprintf(tfile, "logs/%s_timing_parcustom_%d.txt", basename, nth);
-    sprintf(sfile, "logs/%s_sequence_parcustom_%d.txt", basename, nth);
+    const char* algorithm = "Greedy";
+    const char* size_category = get_size_category(shop->njobs, shop->nmachs);
+    
+    char tfile[512], sfile[512], dir_path[512];
+    
+    // Create directory structure
+    sprintf(dir_path, "../../Logs/%s/%s", algorithm, size_category);
+#ifdef _WIN32
+    char cmd[1024];
+    sprintf(cmd, "mkdir \"%s\" 2>nul", dir_path);
+    system(cmd);
+#else
+    char cmd[1024];
+    sprintf(cmd, "mkdir -p \"%s\"", dir_path);
+    system(cmd);
+#endif
+    
+    get_log_path_par(tfile, algorithm, size_category, basename, "timing_pargreedy", nth);
+    get_log_path_par(sfile, algorithm, size_category, basename, "sequence_pargreedy", nth);
+    
     FILE *ft = fopen(tfile, "w");
     if (!ft) return;
     fprintf(ft, "Thread | Ops | Total(s) | Avg(s)\n");
@@ -188,14 +234,24 @@ int main(int argc, char *argv[]) {
     strcpy(base, fname);
     char *dot = strrchr(base, '.');
     if (dot) *dot = 0;
+    
     ParallelShop shop;
     if (!load_problem_par(iname, &shop)) return 1;
-    make_logs_dir();
+    
+    // Auto-route output to appropriate folders based on problem size
+    const char* algorithm = "Greedy";
+    const char* size_category = get_size_category(shop.njobs, shop.nmachs);
+    
+    char auto_result_path[512];
+    get_result_path_par(auto_result_path, algorithm, size_category, base, nth);
+    
     int total = shop.njobs * shop.nops;
     int nthr = nth;
     if (nthr > total) nthr = total;
     if (nthr > 8 && total < 100) nthr = 8;
-    if (nthr < 1) nthr = 1;    const int reps = 10000; // Increase repetitions for better timing
+    if (nthr < 1) nthr = 1;
+    
+    const int reps = 10000; // Increase repetitions for better timing
     double ttot = 0.0;
 #ifdef _WIN32
     LARGE_INTEGER freq, t0, t1;
@@ -217,13 +273,24 @@ int main(int argc, char *argv[]) {
 #endif
     }
     double avg = ttot/reps;
+    
     dump_logs_par(&shop, nthr, base);
+    
+    // Save to both user-specified path and auto-routed path
     save_result_par(oname, &shop);
-    char sumfile[256];
-    sprintf(sumfile, "logs/%s_exec_parcustom.txt", base);
+    save_result_par(auto_result_path, &shop);
+    
+    char sumfile[512], dir_path[512];
+    sprintf(dir_path, "../../Logs/%s/%s", algorithm, size_category);
+#ifdef _WIN32
+    char cmd[1024];
+    sprintf(cmd, "mkdir \"%s\" 2>nul", dir_path);
+    system(cmd);
+#endif
+    sprintf(sumfile, "../../Logs/%s/%s/%s_exec_pargreedy.txt", algorithm, size_category, base);
     FILE *fsum = fopen(sumfile, "a");
     if (fsum) {
-        fprintf(fsum, "Input: %s, Threads: %d, ParCustom, AvgTime: %.9f s\n", base, nthr, avg);
+        fprintf(fsum, "Input: %s, Threads: %d, ParGreedy, AvgTime: %.9f s\n", base, nthr, avg);
         fclose(fsum);
     }
     return 0;
