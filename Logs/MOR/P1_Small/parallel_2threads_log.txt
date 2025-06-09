@@ -1,0 +1,17 @@
+﻿=== MOR PARALLEL ALGORITHM RESULTS ===
+Dataset: P1_Small (3x3)
+Input File: Data/1_Small_sample.jss
+Output File: ..\Result\MOR\P1_Small\parallel_2threads_result.txt
+Execution Time: 698.14ms
+Thread Count: 2
+Makespan: 12
+Operation Distribution: Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+Algorithm: MOR Parallel
+Timestamp: 06/08/2025 15:28:54
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan): 12 time units
+Thread utilization: 2 threads
+Jobs processed: 3
+Total operations: 12
+Average operations per thread: 6

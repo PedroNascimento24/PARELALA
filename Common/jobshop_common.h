@@ -29,6 +29,16 @@ typedef struct {
     int stime;     // Start time (-1 if not scheduled yet)
 } Step;
 
+// Definition for Shifting Bottleneck operations on a single machine
+typedef struct {
+    int job_idx;        // Original job index
+    int op_idx_in_job;  // Original operation index within the job
+    int op_node_id;     // Graph node ID for this operation
+    int r_time;         // Release time (EST - Earliest Start Time)
+    int p_time;         // Processing time
+    int q_time_val;     // Tail time (longest path from this op to sink, including its p_time)
+} OneMachineOpInfo;
+
 // Log entry for timing analysis
 typedef struct {
     int jid;          // Job ID

@@ -21,56 +21,71 @@ Write-Host "=============================================" -ForegroundColor Cyan
 # Enhanced default configuration with ALL algorithms and flexible settings
 $defaultConfig = @{
     # Global settings
-    settings = @{
-        repetitions = 10000  # For timing accuracy
-        cleanBefore = $true  # Clean previous results
+    settings   = @{
+        repetitions     = 10000  # For timing accuracy
+        cleanBefore     = $true  # Clean previous results
         generateReports = $true  # Generate comprehensive reports
-        verbose = $true      # Detailed output
-        timeoutSeconds = 300 # Per algorithm timeout
+        verbose         = $true      # Detailed output
+        timeoutSeconds  = 300 # Per algorithm timeout
     }
-    
-    # All available algorithms
-    algorithms = @{        Greedy = @{
+      # All available algorithms
+    algorithms = @{
+        Greedy = @{
             description = "Earliest start time greedy heuristic"
-            sequential = @{
-                enabled = $true
+            sequential  = @{
+                enabled    = $true
                 executable = "..\Algorithms\Greedy\jobshop_seq_greedy.exe"
             }
-            parallel = @{
-                enabled = $true
-                executable = "..\Algorithms\Greedy\jobshop_par_greedy.exe"
+            parallel    = @{
+                enabled      = $true
+                executable   = "..\Algorithms\Greedy\jobshop_par_greedy.exe"
                 threadCounts = @(1, 2, 4, 8, 16)  # Expanded thread testing
             }
         }
-        SPT = @{
+        SPT                       = @{
             description = "Shortest Processing Time first heuristic"
-            sequential = @{
-                enabled = $true
+            sequential  = @{
+                enabled    = $true
                 executable = "..\Algorithms\SPT\jobshop_seq_spt.exe"
             }
-        }
-        LPT = @{
-            description = "Longest Processing Time first heuristic"
-            sequential = @{
-                enabled = $true
-                executable = "..\Algorithms\LPT\jobshop_seq_lpt.exe"
+            parallel    = @{
+                enabled      = $true
+                executable   = "..\Algorithms\SPT\jobshop_par_spt.exe"
+                threadCounts = @(1, 2, 4, 8, 16)
             }
         }
-        MOR = @{
+        LPT                       = @{
+            description = "Longest Processing Time first heuristic"
+            sequential  = @{
+                enabled    = $true
+                executable = "..\Algorithms\LPT\jobshop_seq_lpt.exe"
+            }
+            parallel    = @{
+                enabled      = $true
+                executable   = "..\Algorithms\LPT\jobshop_par_lpt.exe"
+                threadCounts = @(1, 2, 4, 8, 16)
+            }
+        }
+        MOR                       = @{
             description = "Most Operations Remaining priority heuristic"
-            sequential = @{
-                enabled = $true
+            sequential  = @{
+                enabled    = $true
                 executable = "..\Algorithms\MOR\jobshop_seq_mor.exe"
+            }
+            parallel    = @{
+                enabled      = $true
+                executable   = "..\Algorithms\MOR\jobshop_par_mor.exe"
+                threadCounts = @(1, 2, 4, 8, 16)
             }
         }
     }
     # Dataset configurations with expected performance hints
-    datasets = @(
-        @{Name="1_Small_sample"; Size="3x3"; Category="P1_Small"; ExpectedTime="<100ms"}
-        @{Name="2_Medium_sample"; Size="6x6"; Category="P2_Medium"; ExpectedTime="<200ms"}  
-        @{Name="3_Big_sample"; Size="25x25"; Category="P3_Large"; ExpectedTime="<5s"}
-        @{Name="4_XLarge_sample"; Size="50x20"; Category="P4_XLarge"; ExpectedTime="<30s"}
-        @{Name="5_XXLarge_sample"; Size="100x20"; Category="P5_XXLarge"; ExpectedTime="<2min"}
+    datasets   = @(
+        @{Name = "1_Small_sample"; Size = "3x3"; Category = "P1_Small"; ExpectedTime = "<100ms" }
+        @{Name = "2_Medium_sample"; Size = "6x6"; Category = "P2_Medium"; ExpectedTime = "<200ms" }  
+        @{Name = "3_Big_sample"; Size = "25x25"; Category = "P3_Large"; ExpectedTime = "<5s" }
+        @{Name = "4_XLarge_sample"; Size = "50x20"; Category = "P4_XLarge"; ExpectedTime = "<30s" }
+        @{Name = "5_XXLarge_sample"; Size = "100x20"; Category = "P5_XXLarge"; ExpectedTime = "<2min" }
     )
 }
 
@@ -91,8 +106,8 @@ if ($GenerateConfig) {
 
 if ($CleanOnly) {
     Write-Host "=== CLEANING MODE ===" -ForegroundColor Red
-    Get-ChildItem -Path "Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-    Get-ChildItem -Path "Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem -Path "..\\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem -Path ".\\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
     Remove-Item "comprehensive_analysis_report.txt" -ErrorAction SilentlyContinue
     Write-Host "SUCCESS: All previous results cleaned" -ForegroundColor Green
     exit 0
@@ -102,7 +117,8 @@ if ($CleanOnly) {
 if (Test-Path $ConfigFile) {
     Write-Host "Loading configuration from: $ConfigFile" -ForegroundColor White
     $config = Get-Content $ConfigFile | ConvertFrom-Json
-} else {
+}
+else {
     Write-Host "Creating default configuration: $ConfigFile" -ForegroundColor Yellow
     $config = $defaultConfig
     $config | ConvertTo-Json -Depth 10 | Out-File $ConfigFile -Encoding UTF8
@@ -176,8 +192,8 @@ Write-Host "SUCCESS: All required executables found" -ForegroundColor Green
 # Clean previous results if enabled
 if ($config.settings -and $config.settings.cleanBefore) {
     Write-Host "`n=== CLEANING PREVIOUS RESULTS ===" -ForegroundColor Magenta
-    Get-ChildItem -Path "Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-    Get-ChildItem -Path "Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem -Path "..\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem -Path "..\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
     Write-Host "Previous results cleaned" -ForegroundColor Green
 }
 
@@ -188,8 +204,8 @@ foreach ($algorithmName in $config.algorithms.PSObject.Properties.Name) {
     if (($algorithm.sequential -and $algorithm.sequential.enabled) -or 
         ($algorithm.parallel -and $algorithm.parallel.enabled)) {
         foreach ($dataset in $config.datasets) {
-            $resultDir = "Result\$algorithmName\$($dataset.Category)"
-            $logDir = "Logs\$algorithmName\$($dataset.Category)"
+            $resultDir = "..\Result\$algorithmName\$($dataset.Category)"
+            $logDir = "..\Logs\$algorithmName\$($dataset.Category)"
             New-Item -ItemType Directory -Path $resultDir -Force | Out-Null
             New-Item -ItemType Directory -Path $logDir -Force | Out-Null
         }
@@ -205,7 +221,8 @@ function Get-Makespan {
             if ($content.Count -gt 0 -and $content[0] -match '^\d+$') {
                 return [int]$content[0]
             }
-        } catch {
+        }
+        catch {
             Write-Warning "Failed to extract makespan from $filePath"
         }
     }
@@ -217,9 +234,9 @@ function Get-OperationDistribution {
     param($filePath, $threads)
     if (!(Test-Path $filePath)) {
         return @{
-            Display = "No data available"
-            JobCount = 0
-            TotalOps = 0
+            Display         = "No data available"
+            JobCount        = 0
+            TotalOps        = 0
             AvgOpsPerThread = 0
         }
     }
@@ -228,9 +245,9 @@ function Get-OperationDistribution {
         $content = Get-Content $filePath
         if ($content.Count -lt 2) {
             return @{
-                Display = "Invalid file format"
-                JobCount = 0
-                TotalOps = 0
+                Display         = "Invalid file format"
+                JobCount        = 0
+                TotalOps        = 0
                 AvgOpsPerThread = 0
             }
         }
@@ -249,16 +266,17 @@ function Get-OperationDistribution {
         $avgOpsPerThread = if ($threads -gt 0) { [math]::Round($totalOperations / $threads, 1) } else { 0 }
         
         return @{
-            Display = "Jobs: $jobCount, Total Ops: $totalOperations, Avg Ops/Thread: $avgOpsPerThread"
-            JobCount = $jobCount
-            TotalOps = $totalOperations
+            Display         = "Jobs: $jobCount, Total Ops: $totalOperations, Avg Ops/Thread: $avgOpsPerThread"
+            JobCount        = $jobCount
+            TotalOps        = $totalOperations
             AvgOpsPerThread = $avgOpsPerThread
         }
-    } catch {
+    }
+    catch {
         return @{
-            Display = "Analysis failed"
-            JobCount = 0
-            TotalOps = 0
+            Display         = "Analysis failed"
+            JobCount        = 0
+            TotalOps        = 0
             AvgOpsPerThread = 0
         }
     }
@@ -269,11 +287,11 @@ function Get-PerformanceMetrics {
     param($results, $dataset)
     
     $metrics = @{
-        BestMakespan = 999999
-        BestAlgorithm = ""
+        BestMakespan       = 999999
+        BestAlgorithm      = ""
         BestImplementation = ""
-        SpeedupData = @{}
-        EfficiencyData = @{}
+        SpeedupData        = @{}
+        EfficiencyData     = @{}
     }
     
     $sequentialTime = $null
@@ -346,15 +364,15 @@ foreach ($algorithmName in $config.algorithms.PSObject.Properties.Name) {
         foreach ($dataset in $config.datasets) {
             $testCount++
             Write-Host "`n[$testCount/$totalTests] $algorithmName Sequential: $($dataset.Category) ($($dataset.Size))" -ForegroundColor White
-              # Verify dataset file exists
+            # Verify dataset file exists
             if (!(Test-Path "../Data/$($dataset.Name).jss")) {
                 Write-Host "  ERROR: Dataset file not found!" -ForegroundColor Red
                 continue
             }
             
             # Create output files
-            $resultFile = "Result\$algorithmName\$($dataset.Category)\sequential_result.txt"
-            $logFile = "Logs\$algorithmName\$($dataset.Category)\sequential_log.txt"
+            $resultFile = "..\Result\$algorithmName\$($dataset.Category)\sequential_result.txt"
+            $logFile = "..\Logs\$algorithmName\$($dataset.Category)\sequential_log.txt"
             
             # Run algorithm
             Write-Host "  -> Executing $algorithmName sequential algorithm..." -ForegroundColor Gray
@@ -377,12 +395,12 @@ foreach ($algorithmName in $config.algorithms.PSObject.Properties.Name) {
                     $results["$algorithmName-$($dataset.Category)"] = @{}
                 }
                 $results["$algorithmName-$($dataset.Category)"]["Sequential"] = @{
-                    Time = $duration
-                    Makespan = $makespan
+                    Time           = $duration
+                    Makespan       = $makespan
                     OpDistribution = $opDistribution.Display
-                    OpData = $opDistribution
-                    ResultFile = $resultFile
-                    Algorithm = $algorithmName
+                    OpData         = $opDistribution
+                    ResultFile     = $resultFile
+                    Algorithm      = $algorithmName
                     Implementation = "Sequential"
                 }
                 
@@ -406,7 +424,8 @@ Jobs processed: $($opDistribution.JobCount)
 Total operations: $($opDistribution.TotalOps)
 "@
                 $logContent | Out-File -FilePath $logFile -Encoding UTF8
-            } else {
+            }
+            else {
                 Write-Host "  -> FAILED: $algorithmName sequential execution failed" -ForegroundColor Red
             }
         }
@@ -415,7 +434,7 @@ Total operations: $($opDistribution.TotalOps)
     # Run parallel tests if enabled
     if ($algorithm.parallel -and $algorithm.parallel.enabled) {
         Write-Host "`n--- Testing $algorithmName Parallel ---" -ForegroundColor Yellow
-          foreach ($dataset in $config.datasets) {
+        foreach ($dataset in $config.datasets) {
             # Verify dataset file exists
             if (!(Test-Path "../Data/$($dataset.Name).jss")) {
                 Write-Host "  ERROR: Dataset file not found!" -ForegroundColor Red
@@ -427,8 +446,8 @@ Total operations: $($opDistribution.TotalOps)
                 Write-Host "`n[$testCount/$totalTests] $algorithmName Parallel ($threads threads): $($dataset.Category) ($($dataset.Size))" -ForegroundColor White
                 
                 # Create output files
-                $resultFile = "Result\$algorithmName\$($dataset.Category)\parallel_${threads}threads_result.txt"
-                $logFile = "Logs\$algorithmName\$($dataset.Category)\parallel_${threads}threads_log.txt"                # Run parallel algorithm
+                $resultFile = "..\Result\$algorithmName\$($dataset.Category)\parallel_${threads}threads_result.txt"
+                $logFile = "..\Logs\$algorithmName\$($dataset.Category)\parallel_${threads}threads_log.txt"                # Run parallel algorithm
                 Write-Host "  -> Executing $algorithmName parallel algorithm with $threads threads..." -ForegroundColor Gray
                 $startTime = Get-Date
                 & "$($algorithm.parallel.executable)" "../Data/$($dataset.Name).jss" $resultFile $threads 2>$null
@@ -449,13 +468,13 @@ Total operations: $($opDistribution.TotalOps)
                         $results["$algorithmName-$($dataset.Category)"] = @{}
                     }
                     $results["$algorithmName-$($dataset.Category)"]["Parallel_${threads}threads"] = @{
-                        Time = $duration
-                        Makespan = $makespan
+                        Time           = $duration
+                        Makespan       = $makespan
                         OpDistribution = $opDistribution.Display
-                        OpData = $opDistribution
-                        ResultFile = $resultFile
-                        ThreadCount = $threads
-                        Algorithm = $algorithmName
+                        OpData         = $opDistribution
+                        ResultFile     = $resultFile
+                        ThreadCount    = $threads
+                        Algorithm      = $algorithmName
                         Implementation = "Parallel_${threads}threads"
                     }
                     
@@ -480,7 +499,8 @@ Total operations: $($opDistribution.TotalOps)
 Average operations per thread: $($opDistribution.AvgOpsPerThread)
 "@
                     $logContent | Out-File -FilePath $logFile -Encoding UTF8
-                } else {
+                }
+                else {
                     Write-Host "  -> FAILED: $algorithmName parallel execution failed" -ForegroundColor Red
                 }
             }

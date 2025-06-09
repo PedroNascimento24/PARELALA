@@ -1,15 +1,15 @@
-﻿=== LPT SEQUENTIAL ALGORITHM RESULTS ===
+﻿=== Greedy SEQUENTIAL ALGORITHM RESULTS ===
 Dataset: P1_Small (3x3)
 Input File: Data/1_Small_sample.jss
-Output File: ..\Result\LPT\P1_Small\sequential_result.txt
-Execution Time: 39.86ms
-Makespan: 14
+Output File: ..\Result\Greedy\P1_Small\sequential_result.txt
+Execution Time: 36.25ms
+Makespan: 12
 Operation Distribution: Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-Algorithm: LPT Sequential
-Timestamp: 06/08/2025 15:28:51
+Algorithm: Greedy Sequential
+Timestamp: 06/08/2025 15:28:54
 
 === RESULT ANALYSIS ===
-Total scheduling time (makespan): 14 time units
+Total scheduling time (makespan): 12 time units
 Algorithm efficiency: Sequential processing
 All operations executed in single thread
 Jobs processed: 3

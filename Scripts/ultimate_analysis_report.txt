@@ -1,21 +1,27 @@
 ﻿========================================================================
 === ULTIMATE JOB SHOP SCHEDULING ANALYSIS REPORT ===
 ========================================================================
-Generated: 06/08/2025 13:48:07
+Generated: 06/08/2025 15:28:55
 Configuration: analysis_config.json
-Total Tests Executed: 6
+Total Tests Executed: 12
 
 === ALGORITHM PERFORMANCE SUMMARY ===
 
 --- P1_Small Results ---
 Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
 ----------------------------------------------------------------------------------------------------
-Greedy              Parallel_1threads   20          274.7       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-Greedy              Parallel_2threads   11          714.9       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
-Greedy              Sequential          12          29.8        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-LPT                 Sequential          14          31.7        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-MOR                 Sequential          11          30.3        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
-SPT                 Sequential          11          30.4        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+Greedy              Parallel_1threads   20          300.5       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+Greedy              Parallel_2threads   11          709.4       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+Greedy              Sequential          12          36.3        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+LPT                 Parallel_1threads   14          276         Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+LPT                 Parallel_2threads   12          627.9       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+LPT                 Sequential          14          39.9        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+MOR                 Parallel_1threads   11          297.6       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+MOR                 Parallel_2threads   12          698.1       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+MOR                 Sequential          11          33.5        Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+SPT                 Parallel_1threads   11          272.7       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
+SPT                 Parallel_2threads   11          699.2       Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+SPT                 Sequential          11          30          Jobs: 3, Total Ops: 12, Avg Ops/Thread: 12
 
 === PERFORMANCE INSIGHTS ===
 
@@ -36,11 +42,11 @@ This report compares the performance of different scheduling algorithms:
 * Configuration: analysis_config.json
 
 === USAGE EXAMPLES ===
-.\ultimate_analysis.ps1                    # Run all enabled algorithms
-.\ultimate_analysis.ps1 -QuickTest         # Quick test with small dataset only
-.\ultimate_analysis.ps1 -AlgorithmFilter SPT # Run only SPT algorithm
-.\ultimate_analysis.ps1 -DatasetFilter Small # Run only small dataset
-.\ultimate_analysis.ps1 -CleanOnly         # Clean all previous results
-.\ultimate_analysis.ps1 -GenerateConfig    # Generate fresh config file
+.\ultimate_analysis.ps1                         # Run all enabled algorithms
+.\ultimate_analysis.ps1 -QuickTest              # Quick test with small dataset only
+.\ultimate_analysis.ps1 -AlgorithmFilter SPT    # Run only SPT algorithm
+.\ultimate_analysis.ps1 -DatasetFilter Small    # Run only small dataset
+.\ultimate_analysis.ps1 -CleanOnly              # Clean all previous results
+.\ultimate_analysis.ps1 -GenerateConfig         # Generate fresh config file
 
 ========================================================================

@@ -1,0 +1,17 @@
+﻿=== SPT PARALLEL ALGORITHM RESULTS ===
+Dataset: P1_Small (3x3)
+Input File: Data/1_Small_sample.jss
+Output File: ..\Result\SPT\P1_Small\parallel_2threads_result.txt
+Execution Time: 699.2ms
+Thread Count: 2
+Makespan: 11
+Operation Distribution: Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
+Algorithm: SPT Parallel
+Timestamp: 06/08/2025 15:28:53
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan): 11 time units
+Thread utilization: 2 threads
+Jobs processed: 3
+Total operations: 12
+Average operations per thread: 6

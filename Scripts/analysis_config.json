@@ -1,80 +1,102 @@
 ﻿{
-    "datasets":  [
-                     {
-                         "ExpectedTime":  "\u003c100ms",
-                         "Category":  "P1_Small",
-                         "Name":  "1_Small_sample",
-                         "Size":  "3x3"
-                     },
-                     {
-                         "ExpectedTime":  "\u003c200ms",
-                         "Category":  "P2_Medium",
-                         "Name":  "2_Medium_sample",
-                         "Size":  "6x6"
-                     },
-                     {
-                         "ExpectedTime":  "\u003c5s",
-                         "Category":  "P3_Large",
-                         "Name":  "3_Big_sample",
-                         "Size":  "25x25"
-                     },
-                     {
-                         "ExpectedTime":  "\u003c30s",
-                         "Category":  "P4_XLarge",
-                         "Name":  "4_XLarge_sample",
-                         "Size":  "50x20"
-                     },
-                     {
-                         "ExpectedTime":  "\u003c2min",
-                         "Category":  "P5_XXLarge",
-                         "Name":  "5_XXLarge_sample",
-                         "Size":  "100x20"
-                     }
-                 ],
-    "algorithms":  {                       "LPT":  {
-                                   "description":  "Longest Processing Time first heuristic",
-                                   "sequential":  {
-                                                      "executable":  "..\\Algorithms\\LPT\\jobshop_seq_lpt.exe",
-                                                      "enabled":  true
-                                                  }
-                               },
-                       "SPT":  {
-                                   "description":  "Shortest Processing Time first heuristic",
-                                   "sequential":  {
-                                                      "executable":  "..\\Algorithms\\SPT\\jobshop_seq_spt.exe",
-                                                      "enabled":  true
-                                                  }
-                               },
-                       "MOR":  {
-                                   "description":  "Most Operations Remaining priority heuristic",
-                                   "sequential":  {
-                                                      "executable":  "..\\Algorithms\\MOR\\jobshop_seq_mor.exe",
-                                                      "enabled":  true
-                                                  }
-                               },
-                       "Greedy":  {
-                                      "parallel":  {
-                                                       "threadCounts":  [
-                                                                            1,
-                                                                            2,
-                                                                            4,
-                                                                            8,
-                                                                            16
-                                                                        ],
-                                                       "executable":  "..\\Algorithms\\Greedy\\jobshop_par_greedy.exe",
-                                                       "enabled":  true
-                                                   },
-                                      "sequential":  {
-                                                         "executable":  "..\\Algorithms\\Greedy\\jobshop_seq_greedy.exe",
-                                                         "enabled":  true
-                                                     },
-                                      "description":  "Earliest start time greedy heuristic"
-                                  }
-                   },
-    "settings":  {
-                     "verbose":  true,
-                     "repetitions":  10000,
-                     "generateReports":  true,
-                     "cleanBefore":  true
-                 }
+    "datasets": [
+        {
+            "ExpectedTime": "\u003c100ms",
+            "Category": "P1_Small",
+            "Name": "1_Small_sample",
+            "Size": "3x3"
+        },
+        {
+            "ExpectedTime": "\u003c200ms",
+            "Category": "P2_Medium",
+            "Name": "2_Medium_sample",
+            "Size": "6x6"
+        },
+        {
+            "ExpectedTime": "\u003c5s",
+            "Category": "P3_Large",
+            "Name": "3_Big_sample",
+            "Size": "25x25"
+        },
+        {
+            "ExpectedTime": "\u003c30s",
+            "Category": "P4_XLarge",
+            "Name": "4_XLarge_sample",
+            "Size": "50x20"
+        },
+        {
+            "ExpectedTime": "\u003c2min",
+            "Category": "P5_XXLarge",
+            "Name": "5_XXLarge_sample",
+            "Size": "100x20"
+        }
+    ],
+    "algorithms": {
+        "LPT": {
+            "description": "Longest Processing Time first heuristic",
+            "sequential": {
+                "executable": "..\\Algorithms\\LPT\\jobshop_seq_lpt.exe",
+                "enabled": true
+            },
+            "parallel": {
+                "threadCounts": [1,2,4,8,16],
+                "executable": "..\\Algorithms\\LPT\\jobshop_par_lpt.exe",
+                "enabled": true
+            }
+        },
+        "SPT": {
+            "description": "Shortest Processing Time first heuristic",
+            "sequential": {
+                "executable": "..\\Algorithms\\SPT\\jobshop_seq_spt.exe",
+                "enabled": true
+            },
+            "parallel": {
+                "threadCounts": [1,2,4,8,16],
+                "executable": "..\\Algorithms\\SPT\\jobshop_par_spt.exe",
+                "enabled": true
+            }
+        },
+        "MOR": {
+            "description": "Most Operations Remaining priority heuristic",
+            "sequential": {
+                "executable": "..\\Algorithms\\MOR\\jobshop_seq_mor.exe",
+                "enabled": true
+            },
+            "parallel": {
+                "threadCounts": [1,2,4,8,16],
+                "executable": "..\\Algorithms\\MOR\\jobshop_par_mor.exe",
+                "enabled": true
+            }
+        },
+        "Greedy": {
+            "parallel": {
+                "threadCounts": [1,2,4,8,16],
+                "executable": "..\\\\Algorithms\\\\Greedy\\\\jobshop_par_greedy.exe",
+                "enabled": true
+            },
+            "sequential": {
+                "executable": "..\\\\Algorithms\\\\Greedy\\\\jobshop_seq_greedy.exe",
+                "enabled": true
+            },
+            "description": "Earliest start time greedy heuristic"
+        },
+        "ShiftingBottleneck": {
+            "description": "Shifting Bottleneck heuristic",
+            "sequential": {
+                "executable": "..\\\\Algorithms\\\\ShiftingBottleneck\\\\jobshop_seq_sb.exe",
+                "enabled": true
+            },
+            "parallel": {
+                "threadCounts": [1,2,4,8,16],
+                "executable": "..\\\\Algorithms\\\\ShiftingBottleneck\\\\jobshop_par_sb.exe",
+                "enabled": true
+            }
+        }
+    },
+    "settings": {
+        "verbose": true,
+        "repetitions": 10000,
+        "generateReports": true,
+        "cleanBefore": true
+    }
 }
