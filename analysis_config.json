@@ -70,7 +70,25 @@
                                                          "enabled":  true
                                                      },
                                       "description":  "Earliest start time greedy heuristic"
-                                  }
+                                  },
+                       "ShiftingBottleneck":  {
+                                   "description":  "Shifting Bottleneck heuristic",
+                                   "sequential":  {
+                                                      "executable":  "Algorithms\\\\ShiftingBottleneck\\\\jobshop_seq_sb.exe",
+                                                      "enabled":  true
+                                                  },
+                                   "parallel":  {
+                                       "executable":  "Algorithms\\\\ShiftingBottleneck\\\\jobshop_par_sb.exe",
+                                       "enabled":  true,
+                                       "threadCounts":  [
+                                                            1,
+                                                            2,
+                                                            4,
+                                                            8,
+                                                            16
+                                                        ]
+                                   }
+                               }
                    },
     "settings":  {
                      "verbose":  true,

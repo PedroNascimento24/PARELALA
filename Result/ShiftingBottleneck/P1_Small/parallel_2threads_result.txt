@@ -1,0 +1,15 @@
+Number of jobs: 3
+Number of machines: 3
+Number of operations per job: 3
+Makespan: 11
+
+Job Operations (Job, Operation, Machine, Duration, Start Time):
+Job 0, Op 0: M0, Len 3, Start 0
+Job 0, Op 1: M1, Len 2, Start 4
+Job 0, Op 2: M2, Len 2, Start 9
+Job 1, Op 0: M0, Len 2, Start 3
+Job 1, Op 1: M2, Len 1, Start 5
+Job 1, Op 2: M1, Len 4, Start 6
+Job 2, Op 0: M1, Len 4, Start 0
+Job 2, Op 1: M2, Len 3, Start 6
+Job 2, Op 2: M0, Len 1, Start 9

@@ -31,41 +31,40 @@
             "Size": "100x20"
         }
     ],
-    "algorithms": {
-        "LPT": {
+    "algorithms": {        "LPT": {
             "description": "Longest Processing Time first heuristic",
             "sequential": {
                 "executable": "..\\Algorithms\\LPT\\jobshop_seq_lpt.exe",
-                "enabled": true
+                "enabled": false
             },
             "parallel": {
                 "threadCounts": [1,2,4,8,16],
                 "executable": "..\\Algorithms\\LPT\\jobshop_par_lpt.exe",
-                "enabled": true
+                "enabled": false
             }
         },
         "SPT": {
             "description": "Shortest Processing Time first heuristic",
             "sequential": {
                 "executable": "..\\Algorithms\\SPT\\jobshop_seq_spt.exe",
-                "enabled": true
+                "enabled": false
             },
             "parallel": {
                 "threadCounts": [1,2,4,8,16],
                 "executable": "..\\Algorithms\\SPT\\jobshop_par_spt.exe",
-                "enabled": true
+                "enabled": false
             }
         },
         "MOR": {
             "description": "Most Operations Remaining priority heuristic",
             "sequential": {
                 "executable": "..\\Algorithms\\MOR\\jobshop_seq_mor.exe",
-                "enabled": true
+                "enabled": false
             },
             "parallel": {
                 "threadCounts": [1,2,4,8,16],
                 "executable": "..\\Algorithms\\MOR\\jobshop_par_mor.exe",
-                "enabled": true
+                "enabled": false
             }
         },
         "Greedy": {

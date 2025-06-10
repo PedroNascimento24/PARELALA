@@ -1,0 +1,17 @@
+﻿=== ShiftingBottleneck PARALLEL ALGORITHM RESULTS ===
+Dataset: P5_XXLarge (100x20)
+Input File: Data/5_XXLarge_sample.jss
+Output File: ..\Result\ShiftingBottleneck\P5_XXLarge\parallel_8threads_result.txt
+Execution Time: 20.16ms
+Thread Count: 8
+Makespan: 
+Operation Distribution: Jobs: 2005, Total Ops: 18021, Avg Ops/Thread: 2252.6
+Algorithm: ShiftingBottleneck Parallel
+Timestamp: 06/10/2025 15:59:14
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan):  time units
+Thread utilization: 8 threads
+Jobs processed: 2005
+Total operations: 18021
+Average operations per thread: 2252.6

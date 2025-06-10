@@ -326,17 +326,85 @@ void shifting_bottleneck_schedule(Shop *shop, int num_threads) {
         // overall_max_bottleneck_metric and overall_best_seq_len will be overwritten if a better one is found.
     } 
 
-    free(temp_best_sequence_storage);
+    free(temp_best_sequence_storage);    calculate_est_AON(source_node, num_graph_nodes, adj, node_proc_times, est);
 
-    calculate_est_AON(source_node, num_graph_nodes, adj, node_proc_times, est);
+    // Apply resource-aware scheduling to ensure no machine overlaps
+    int machine_available_time[MMAX];
+    for(int m = 0; m < shop->nmachs; m++) {
+        machine_available_time[m] = 0;
+    }
 
+    // Create a list of all operations sorted by their EST
+    typedef struct {
+        int job;
+        int op;
+        int est_time;
+        int machine;
+        int duration;
+    } OpScheduleInfo;
+    
+    OpScheduleInfo* op_list = (OpScheduleInfo*)malloc(num_ops_total * sizeof(OpScheduleInfo));
+    if (!op_list) {
+        fprintf(stderr, "Failed to allocate memory for operation list\n");
+        free_graph_adj_list(adj, num_graph_nodes);
+        return;
+    }
+    
+    int op_count = 0;
     for (int j = 0; j < njobs; ++j) {
         for (int o = 0; o < nops_per_job; ++o) {
             int op_node = op_to_node_idx(j, o, nops_per_job);
             if(op_node < 1 || op_node > num_ops_total) continue;
-            shop->plan[j][o].stime = est[op_node];
+            
+            op_list[op_count].job = j;
+            op_list[op_count].op = o;
+            op_list[op_count].est_time = est[op_node];
+            op_list[op_count].machine = shop->plan[j][o].mach - 1; // Convert to 0-indexed
+            op_list[op_count].duration = shop->plan[j][o].len;
+            op_count++;
         }
     }
+    
+    // Sort operations by EST, then by job, then by operation
+    for(int i = 0; i < op_count - 1; i++) {
+        for(int k = 0; k < op_count - i - 1; k++) {
+            if(op_list[k].est_time > op_list[k+1].est_time ||
+               (op_list[k].est_time == op_list[k+1].est_time && op_list[k].job > op_list[k+1].job) ||
+               (op_list[k].est_time == op_list[k+1].est_time && op_list[k].job == op_list[k+1].job && op_list[k].op > op_list[k+1].op)) {
+                OpScheduleInfo temp = op_list[k];
+                op_list[k] = op_list[k+1];
+                op_list[k+1] = temp;
+            }
+        }
+    }
+    
+    // Schedule operations ensuring no machine conflicts
+    for(int i = 0; i < op_count; i++) {
+        int j = op_list[i].job;
+        int o = op_list[i].op;
+        int machine_idx = op_list[i].machine;
+        int duration = op_list[i].duration;
+        int earliest_start = op_list[i].est_time;
+        
+        // Check job precedence constraint
+        if(o > 0) {
+            int prev_end_time = shop->plan[j][o-1].stime + shop->plan[j][o-1].len;
+            if(earliest_start < prev_end_time) {
+                earliest_start = prev_end_time;
+            }
+        }
+        
+        // Check machine availability constraint
+        if(earliest_start < machine_available_time[machine_idx]) {
+            earliest_start = machine_available_time[machine_idx];
+        }
+        
+        // Schedule the operation
+        shop->plan[j][o].stime = earliest_start;
+        machine_available_time[machine_idx] = earliest_start + duration;
+    }
+    
+    free(op_list);
     
     free_graph_adj_list(adj, num_graph_nodes);
     free_graph_adj_list(rev_adj, num_graph_nodes);

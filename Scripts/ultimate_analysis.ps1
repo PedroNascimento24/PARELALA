@@ -42,7 +42,7 @@ $defaultConfig = @{
                 threadCounts = @(1, 2, 4, 8, 16)  # Expanded thread testing
             }
         }
-        SPT                       = @{
+        SPT = @{
             description = "Shortest Processing Time first heuristic"
             sequential  = @{
                 enabled    = $true
@@ -54,7 +54,7 @@ $defaultConfig = @{
                 threadCounts = @(1, 2, 4, 8, 16)
             }
         }
-        LPT                       = @{
+        LPT = @{
             description = "Longest Processing Time first heuristic"
             sequential  = @{
                 enabled    = $true
@@ -66,15 +66,27 @@ $defaultConfig = @{
                 threadCounts = @(1, 2, 4, 8, 16)
             }
         }
-        MOR                       = @{
+        MOR = @{
             description = "Most Operations Remaining priority heuristic"
             sequential  = @{
                 enabled    = $true
-                executable = "..\Algorithms\MOR\jobshop_seq_mor.exe"
+                executable = "..\\Algorithms\\MOR\\jobshop_seq_mor.exe"
             }
             parallel    = @{
                 enabled      = $true
-                executable   = "..\Algorithms\MOR\jobshop_par_mor.exe"
+                executable   = "..\\Algorithms\\MOR\\jobshop_par_mor.exe"
+                threadCounts = @(1, 2, 4, 8, 16)
+            }
+        }
+        ShiftingBottleneck = @{
+            description = "Shifting Bottleneck heuristic"
+            sequential  = @{
+                enabled    = $true
+                executable = "..\\Algorithms\\ShiftingBottleneck\\jobshop_seq_sb.exe"
+            }
+            parallel    = @{
+                enabled      = $true
+                executable   = "..\\Algorithms\\ShiftingBottleneck\\jobshop_par_sb.exe"
                 threadCounts = @(1, 2, 4, 8, 16)
             }
         }
@@ -129,10 +141,10 @@ else {
 # Apply filters if specified
 if ($AlgorithmFilter) {
     Write-Host "Filtering algorithms: $AlgorithmFilter" -ForegroundColor Yellow
-    $filteredAlgorithms = @{}
+    $filteredAlgorithms = [PSCustomObject]@{}
     foreach ($algName in $config.algorithms.PSObject.Properties.Name) {
         if ($algName -like "*$AlgorithmFilter*") {
-            $filteredAlgorithms[$algName] = $config.algorithms.$algName
+            $filteredAlgorithms | Add-Member -MemberType NoteProperty -Name $algName -Value $config.algorithms.$algName
         }
     }
     $config.algorithms = $filteredAlgorithms
@@ -571,6 +583,7 @@ This report compares the performance of different scheduling algorithms:
 * SPT: Shortest Processing Time first
 * LPT: Longest Processing Time first  
 * MOR: Most Operations Remaining priority
+* ShiftingBottleneck: Shifting Bottleneck heuristic
 
 === FILES GENERATED ===
 * Results: Result/[Algorithm]/[Category]/
