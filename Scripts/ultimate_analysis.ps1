@@ -10,7 +10,9 @@ param(
     [switch]$QuickTest,
     [switch]$GenerateConfig,
     [switch]$CleanOnly,
+    [ValidateSet("Greedy", "SPT", "LPT", "MOR", "ShiftingBottleneck", "BranchAndBound", "")]
     [string]$AlgorithmFilter = "",
+    [ValidateSet("Small", "Medium", "Large", "XLarge", "XXLarge", "XXXLarge", "P1_Small", "P2_Medium", "P3_Large", "P4_XLarge", "P5_XXLarge", "P6_XXXLarge", "")]
     [string]$DatasetFilter = ""
 )
 
@@ -25,10 +27,9 @@ $defaultConfig = @{
         repetitions     = 10000  # For timing accuracy
         cleanBefore     = $true  # Clean previous results
         generateReports = $true  # Generate comprehensive reports
-        verbose         = $true      # Detailed output
-        timeoutSeconds  = 300 # Per algorithm timeout
+        verbose         = $true      # Detailed output        timeoutSeconds  = 300 # Per algorithm timeout
     }
-      # All available algorithms
+    # All available algorithms
     algorithms = @{
         Greedy = @{
             description = "Earliest start time greedy heuristic"
@@ -70,11 +71,11 @@ $defaultConfig = @{
             description = "Most Operations Remaining priority heuristic"
             sequential  = @{
                 enabled    = $true
-                executable = "..\\Algorithms\\MOR\\jobshop_seq_mor.exe"
+                executable = "..\Algorithms\MOR\jobshop_seq_mor.exe"
             }
             parallel    = @{
                 enabled      = $true
-                executable   = "..\\Algorithms\\MOR\\jobshop_par_mor.exe"
+                executable   = "..\Algorithms\MOR\jobshop_par_mor.exe"
                 threadCounts = @(1, 2, 4, 8, 16)
             }
         }
@@ -82,22 +83,35 @@ $defaultConfig = @{
             description = "Shifting Bottleneck heuristic"
             sequential  = @{
                 enabled    = $true
-                executable = "..\\Algorithms\\ShiftingBottleneck\\jobshop_seq_sb.exe"
+                executable = "..\Algorithms\ShiftingBottleneck\jobshop_seq_sb.exe"
             }
             parallel    = @{
                 enabled      = $true
-                executable   = "..\\Algorithms\\ShiftingBottleneck\\jobshop_par_sb.exe"
+                executable   = "..\Algorithms\ShiftingBottleneck\jobshop_par_sb.exe"
+                threadCounts = @(1, 2, 4, 8, 16)
+            }
+        }
+        BranchAndBound = @{
+            description = "Branch & Bound optimal search algorithm"
+            sequential  = @{
+                enabled    = $true
+                executable = "..\Algorithms\BranchAndBound\jobshop_seq_bb_new.exe"
+            }
+            parallel    = @{
+                enabled      = $true
+                executable   = "..\Algorithms\BranchAndBound\jobshop_par_bb_new.exe"
                 threadCounts = @(1, 2, 4, 8, 16)
             }
         }
     }
     # Dataset configurations with expected performance hints
     datasets   = @(
-        @{Name = "1_Small_sample"; Size = "3x3"; Category = "P1_Small"; ExpectedTime = "<100ms" }
-        @{Name = "2_Medium_sample"; Size = "6x6"; Category = "P2_Medium"; ExpectedTime = "<200ms" }  
-        @{Name = "3_Big_sample"; Size = "25x25"; Category = "P3_Large"; ExpectedTime = "<5s" }
-        @{Name = "4_XLarge_sample"; Size = "50x20"; Category = "P4_XLarge"; ExpectedTime = "<30s" }
-        @{Name = "5_XXLarge_sample"; Size = "100x20"; Category = "P5_XXLarge"; ExpectedTime = "<2min" }
+        @{Name = "1_Small_sample"; Size = "3x3"; Category = "P1_Small"; ExpectedTime = "<100ms" },
+        @{Name = "2_Medium_sample"; Size = "6x6"; Category = "P2_Medium"; ExpectedTime = "<200ms" },  
+        @{Name = "3_Big_sample"; Size = "25x25"; Category = "P3_Large"; ExpectedTime = "<5s" },
+        @{Name = "4_XLarge_sample"; Size = "50x20"; Category = "P4_XLarge"; ExpectedTime = "<30s" },
+        @{Name = "5_XXLarge_sample"; Size = "100x20"; Category = "P5_XXLarge"; ExpectedTime = "<2min" },
+        @{Name = "6_XXXLarge_sample"; Size = "100x100"; Category = "P6_XXXLarge"; ExpectedTime = ">5min" }
     )
 }
 
@@ -230,8 +244,20 @@ function Get-Makespan {
     if (Test-Path $filePath) {
         try {
             $content = Get-Content $filePath
-            if ($content.Count -gt 0 -and $content[0] -match '^\d+$') {
-                return [int]$content[0]
+            # Check for different output formats
+            foreach ($line in $content) {
+                # Format 1: Number on first line (original format)
+                if ($line -match '^\d+$') {
+                    return [int]$line
+                }
+                # Format 2: "Best makespan: X" (Branch & Bound format)
+                if ($line -match 'Best makespan:\s*(\d+)') {
+                    return [int]$matches[1]
+                }
+                # Format 3: "Makespan: X" (alternative format)
+                if ($line -match 'Makespan:\s*(\d+)') {
+                    return [int]$matches[1]
+                }
             }
         }
         catch {

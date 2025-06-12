@@ -23,15 +23,21 @@
             "Category": "P4_XLarge",
             "Name": "4_XLarge_sample",
             "Size": "50x20"
-        },
-        {
+        },        {
             "ExpectedTime": "\u003c2min",
             "Category": "P5_XXLarge",
             "Name": "5_XXLarge_sample",
             "Size": "100x20"
+        },
+        {
+            "ExpectedTime": "\u003c10min",
+            "Category": "P6_XXXLarge",
+            "Name": "6_XXXLarge_sample",
+            "Size": "100x100"
         }
     ],
-    "algorithms": {        "LPT": {
+    "algorithms": 
+            {"LPT": {
             "description": "Longest Processing Time first heuristic",
             "sequential": {
                 "executable": "..\\Algorithms\\LPT\\jobshop_seq_lpt.exe",
@@ -42,8 +48,7 @@
                 "executable": "..\\Algorithms\\LPT\\jobshop_par_lpt.exe",
                 "enabled": false
             }
-        },
-        "SPT": {
+        },"SPT": {
             "description": "Shortest Processing Time first heuristic",
             "sequential": {
                 "executable": "..\\Algorithms\\SPT\\jobshop_seq_spt.exe",
@@ -54,8 +59,7 @@
                 "executable": "..\\Algorithms\\SPT\\jobshop_par_spt.exe",
                 "enabled": false
             }
-        },
-        "MOR": {
+        },"MOR": {
             "description": "Most Operations Remaining priority heuristic",
             "sequential": {
                 "executable": "..\\Algorithms\\MOR\\jobshop_seq_mor.exe",
@@ -66,29 +70,39 @@
                 "executable": "..\\Algorithms\\MOR\\jobshop_par_mor.exe",
                 "enabled": false
             }
-        },
-        "Greedy": {
+        },"Greedy": {
             "parallel": {
                 "threadCounts": [1,2,4,8,16],
                 "executable": "..\\\\Algorithms\\\\Greedy\\\\jobshop_par_greedy.exe",
-                "enabled": true
+                "enabled": false
             },
             "sequential": {
                 "executable": "..\\\\Algorithms\\\\Greedy\\\\jobshop_seq_greedy.exe",
-                "enabled": true
+                "enabled": false
             },
             "description": "Earliest start time greedy heuristic"
         },
-        "ShiftingBottleneck": {
+        "BranchAndBound": {
+            "description": "Branch & Bound optimal search algorithm",
+            "sequential": {
+                "executable": "..\\\\Algorithms\\\\BranchAndBound\\\\jobshop_seq_bb.exe",
+                "enabled": true
+            },
+            "parallel": {
+                "threadCounts": [1,2,4,8,16],
+                "executable": "..\\\\Algorithms\\\\BranchAndBound\\\\jobshop_par_bb.exe",
+                "enabled": true
+            }
+        },"ShiftingBottleneck": {
             "description": "Shifting Bottleneck heuristic",
             "sequential": {
                 "executable": "..\\\\Algorithms\\\\ShiftingBottleneck\\\\jobshop_seq_sb.exe",
-                "enabled": true
+                "enabled": false
             },
             "parallel": {
                 "threadCounts": [1,2,4,8,16],
                 "executable": "..\\\\Algorithms\\\\ShiftingBottleneck\\\\jobshop_par_sb.exe",
-                "enabled": true
+                "enabled": false
             }
         }
     },

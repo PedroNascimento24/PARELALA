@@ -1,0 +1,17 @@
+﻿=== BranchAndBound PARALLEL ALGORITHM RESULTS ===
+Dataset: P3_Large (25x25)
+Input File: Data/3_Big_sample.jss
+Output File: ..\Result\BranchAndBound\P3_Large\parallel_4threads_result.txt
+Execution Time: 305.56ms
+Thread Count: 4
+Makespan: 822
+Operation Distribution: Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
+Algorithm: BranchAndBound Parallel
+Timestamp: 06/11/2025 22:16:42
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan): 822 time units
+Thread utilization: 4 threads
+Jobs processed: 5
+Total operations: 22
+Average operations per thread: 5.5

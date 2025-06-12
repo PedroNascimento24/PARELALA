@@ -34,7 +34,7 @@ Get-ChildItem -Path "../Algorithms" -Filter "*.exe" -Recurse -ErrorAction Silent
 Write-Host "SUCCESS: Old executables removed" -ForegroundColor Green
 
 # Build counters
-$totalBuilds = 10  # Greedy Sequential, Greedy Parallel, SPT Sequential, SPT Parallel, LPT Sequential, LPT Parallel, MOR Sequential, MOR Parallel, SB Sequential, SB Parallel
+$totalBuilds = 12  # Greedy Sequential, Greedy Parallel, SPT Sequential, SPT Parallel, LPT Sequential, LPT Parallel, MOR Sequential, MOR Parallel, SB Sequential, SB Parallel, BB Sequential, BB Parallel
 $currentBuild = 0
 $successfulBuilds = 0
 $failedBuilds = 0
@@ -202,11 +202,39 @@ else {
 }
 Pop-Location
 
-# Future algorithms (placeholders for when implemented)
-Write-Host "`n===========================================" -ForegroundColor Yellow
-Write-Host "=== FUTURE ALGORITHMS (NOT IMPLEMENTED) ===" -ForegroundColor Yellow
-Write-Host "===========================================" -ForegroundColor Yellow
-Write-Host "-> Branch & Bound: Will be implemented in future versions" -ForegroundColor Gray
+Write-Host "`n=========================================" -ForegroundColor Magenta
+Write-Host "=== BUILDING BRANCH & BOUND ALGORITHMS ===" -ForegroundColor Magenta
+Write-Host "=========================================" -ForegroundColor Magenta
+
+# Build Branch & Bound Sequential
+$currentBuild++
+Write-Host "`n[$currentBuild/$totalBuilds] Building Branch & Bound Sequential Algorithm..." -ForegroundColor White
+Push-Location "$PSScriptRoot/../Algorithms/BranchAndBound"
+$result = gcc -o jobshop_seq_bb.exe jobshop_seq_bb.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "SUCCESS: Branch & Bound Sequential compiled successfully" -ForegroundColor Green
+    $successfulBuilds++
+}
+else {
+    Write-Host "ERROR: Branch & Bound Sequential compilation failed" -ForegroundColor Red
+    Write-Host $result -ForegroundColor Red
+    $failedBuilds++
+}
+
+# Build Branch & Bound Parallel
+$currentBuild++
+Write-Host "`n[$currentBuild/$totalBuilds] Building Branch & Bound Parallel Algorithm..." -ForegroundColor White
+$result = gcc -pthread -o jobshop_par_bb.exe jobshop_par_bb.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "SUCCESS: Branch & Bound Parallel compiled successfully" -ForegroundColor Green
+    $successfulBuilds++
+}
+else {
+    Write-Host "ERROR: Branch & Bound Parallel compilation failed" -ForegroundColor Red
+    Write-Host $result -ForegroundColor Red
+    $failedBuilds++
+}
+Pop-Location
 
 # Build Summary
 Write-Host "`n==========================================" -ForegroundColor Cyan
@@ -233,7 +261,9 @@ $executables = @(
     @{Path = "$PSScriptRoot/../Algorithms/MOR/jobshop_seq_mor.exe"; Name = "MOR Sequential" },
     @{Path = "$PSScriptRoot/../Algorithms/MOR/jobshop_par_mor.exe"; Name = "MOR Parallel" },
     @{Path = "$PSScriptRoot/../Algorithms/ShiftingBottleneck/jobshop_seq_sb.exe"; Name = "SB Sequential" },
-    @{Path = "$PSScriptRoot/../Algorithms/ShiftingBottleneck/jobshop_par_sb.exe"; Name = "SB Parallel" }
+    @{Path = "$PSScriptRoot/../Algorithms/ShiftingBottleneck/jobshop_par_sb.exe"; Name = "SB Parallel" },
+    @{Path = "$PSScriptRoot/../Algorithms/BranchAndBound/jobshop_seq_bb.exe"; Name = "BB Sequential" },
+    @{Path = "$PSScriptRoot/../Algorithms/BranchAndBound/jobshop_par_bb.exe"; Name = "BB Parallel" }
 )
 
 foreach ($exe in $executables) {

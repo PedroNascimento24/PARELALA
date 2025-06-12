@@ -1,0 +1,6 @@
+Parallel Branch & Bound Results
+Input file: ../Data/5_XXLarge_sample.jss
+Jobs: 100, Machines: 20, Operations per job: 20
+Number of threads: 8
+Best makespan: 2147483647
+Execution time: 3.568000 seconds
