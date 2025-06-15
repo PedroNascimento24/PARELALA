@@ -1,65 +1,27 @@
 ﻿========================================================================
 === ULTIMATE JOB SHOP SCHEDULING ANALYSIS REPORT ===
 ========================================================================
-Generated: 06/11/2025 22:22:28
+Generated: 06/15/2025 17:16:38
 Configuration: analysis_config.json
-Total Tests Executed: 36
+Total Tests Executed: 12
 
 === ALGORITHM PERFORMANCE SUMMARY ===
-
---- P1_Small Results ---
-Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
-----------------------------------------------------------------------------------------------------
-BranchAndBound      Parallel_1threads   13          8.7         Jobs: 5, Total Ops: 22, Avg Ops/Thread: 22
-BranchAndBound      Parallel_2threads   13          8.7         Jobs: 5, Total Ops: 22, Avg Ops/Thread: 11
-BranchAndBound      Parallel_4threads   13          7.3         Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
-BranchAndBound      Parallel_8threads   13          6.6         Jobs: 5, Total Ops: 22, Avg Ops/Thread: 2.8
-BranchAndBound      Sequential          13          5.7         Jobs: 4, Total Ops: 18, Avg Ops/Thread: 18
 
 --- P2_Medium Results ---
 Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
 ----------------------------------------------------------------------------------------------------
-BranchAndBound      Parallel_1threads   149         6.6         Jobs: 5, Total Ops: 22, Avg Ops/Thread: 22
-BranchAndBound      Parallel_2threads   127         8.6         Jobs: 5, Total Ops: 22, Avg Ops/Thread: 11
-BranchAndBound      Parallel_4threads   118         10.2        Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
-BranchAndBound      Parallel_8threads   116         13.7        Jobs: 5, Total Ops: 22, Avg Ops/Thread: 2.8
-BranchAndBound      Sequential          149         6.9         Jobs: 4, Total Ops: 18, Avg Ops/Thread: 18
-
---- P3_Large Results ---
-Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
-----------------------------------------------------------------------------------------------------
-BranchAndBound      Parallel_1threads   2665        165.8       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 22
-BranchAndBound      Parallel_2threads   2665        171.3       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 11
-BranchAndBound      Parallel_4threads   822         305.6       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
-BranchAndBound      Parallel_8threads   681         270.2       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 2.8
-BranchAndBound      Sequential          2665        710.9       Jobs: 4, Total Ops: 18, Avg Ops/Thread: 18
-
---- P4_XLarge Results ---
-Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
-----------------------------------------------------------------------------------------------------
-BranchAndBound      Parallel_1threads   40720       406.5       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 22
-BranchAndBound      Parallel_2threads   40720       421.2       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 11
-BranchAndBound      Parallel_4threads   11519       699.6       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
-BranchAndBound      Parallel_8threads   10018       802.3       Jobs: 5, Total Ops: 22, Avg Ops/Thread: 2.8
-BranchAndBound      Sequential          40720       1933.9      Jobs: 4, Total Ops: 18, Avg Ops/Thread: 18
-
---- P5_XXLarge Results ---
-Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
-----------------------------------------------------------------------------------------------------
-BranchAndBound      Parallel_1threads   81415       1592.6      Jobs: 5, Total Ops: 22, Avg Ops/Thread: 22
-BranchAndBound      Parallel_2threads   81415       1565.9      Jobs: 5, Total Ops: 22, Avg Ops/Thread: 11
-BranchAndBound      Parallel_4threads   81415       1539.3      Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
-BranchAndBound      Parallel_8threads   2147483647  3575.5      Jobs: 5, Total Ops: 22, Avg Ops/Thread: 2.8
-BranchAndBound      Sequential          81415       7667.3      Jobs: 4, Total Ops: 18, Avg Ops/Thread: 18
-
---- P6_XXXLarge Results ---
-Algorithm           Implementation      Makespan    Time(ms)    Operation Distribution
-----------------------------------------------------------------------------------------------------
-BranchAndBound      Parallel_1threads   2147483647  82817.1     Jobs: 5, Total Ops: 22, Avg Ops/Thread: 22
-BranchAndBound      Parallel_2threads   2147483647  85578.6     Jobs: 5, Total Ops: 22, Avg Ops/Thread: 11
-BranchAndBound      Parallel_4threads   2147483647  84303.2     Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
-BranchAndBound      Parallel_8threads   2147483647  83184.5     Jobs: 5, Total Ops: 22, Avg Ops/Thread: 2.8
-BranchAndBound      Sequential          444316      176937.6    Jobs: 4, Total Ops: 18, Avg Ops/Thread: 18
+BranchAndBound      Parallel_16threads  115         20          Jobs: 5, Total Ops: 22, Avg Ops/Thread: 1.4
+BranchAndBound      Parallel_1threads   149         6           Jobs: 5, Total Ops: 22, Avg Ops/Thread: 22
+BranchAndBound      Parallel_2threads   149         8.5         Jobs: 5, Total Ops: 22, Avg Ops/Thread: 11
+BranchAndBound      Parallel_4threads   149         10          Jobs: 5, Total Ops: 22, Avg Ops/Thread: 5.5
+BranchAndBound      Parallel_8threads   110         13          Jobs: 5, Total Ops: 22, Avg Ops/Thread: 2.8
+BranchAndBound      Sequential          149         6.5         Jobs: 4, Total Ops: 18, Avg Ops/Thread: 18
+ShiftingBottleneck  Parallel_16threads  65          8           Jobs: 41, Total Ops: 345, Avg Ops/Thread: 21.6
+ShiftingBottleneck  Parallel_1threads   65          8           Jobs: 41, Total Ops: 345, Avg Ops/Thread: 345
+ShiftingBottleneck  Parallel_2threads   65          7.5         Jobs: 41, Total Ops: 345, Avg Ops/Thread: 172.5
+ShiftingBottleneck  Parallel_4threads   65          7           Jobs: 41, Total Ops: 345, Avg Ops/Thread: 86.2
+ShiftingBottleneck  Parallel_8threads   65          8.3         Jobs: 41, Total Ops: 345, Avg Ops/Thread: 43.1
+ShiftingBottleneck  Sequential          65          6           Jobs: 41, Total Ops: 345, Avg Ops/Thread: 345
 
 === PERFORMANCE INSIGHTS ===
 

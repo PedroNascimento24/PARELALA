@@ -7,7 +7,7 @@
 #include "../../Common/jobshop_common.h"
 
 #define MAX_STACK_SIZE 1000
-#define MAX_THREADS 8
+#define MAX_THREADS 16
 
 // Simplified Branch and Bound Node Structure
 typedef struct {

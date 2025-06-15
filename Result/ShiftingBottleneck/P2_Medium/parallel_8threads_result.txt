@@ -1,0 +1,42 @@
+Number of jobs: 6
+Number of machines: 6
+Number of operations per job: 6
+Makespan: 65
+
+Job Operations (Job, Operation, Machine, Duration, Start Time):
+Job 0, Op 0: M2, Len 1, Start 0
+Job 0, Op 1: M0, Len 3, Start 1
+Job 0, Op 2: M1, Len 6, Start 16
+Job 0, Op 3: M3, Len 7, Start 22
+Job 0, Op 4: M5, Len 3, Start 29
+Job 0, Op 5: M4, Len 6, Start 48
+Job 1, Op 0: M1, Len 8, Start 8
+Job 1, Op 1: M2, Len 5, Start 16
+Job 1, Op 2: M4, Len 10, Start 30
+Job 1, Op 3: M5, Len 10, Start 40
+Job 1, Op 4: M0, Len 10, Start 50
+Job 1, Op 5: M3, Len 4, Start 60
+Job 2, Op 0: M2, Len 5, Start 1
+Job 2, Op 1: M3, Len 4, Start 6
+Job 2, Op 2: M5, Len 8, Start 15
+Job 2, Op 3: M0, Len 9, Start 25
+Job 2, Op 4: M1, Len 1, Start 34
+Job 2, Op 5: M4, Len 7, Start 58
+Job 3, Op 0: M1, Len 5, Start 3
+Job 3, Op 1: M0, Len 5, Start 8
+Job 3, Op 2: M2, Len 5, Start 21
+Job 3, Op 3: M3, Len 3, Start 29
+Job 3, Op 4: M4, Len 8, Start 40
+Job 3, Op 5: M5, Len 9, Start 50
+Job 4, Op 0: M2, Len 9, Start 6
+Job 4, Op 1: M1, Len 3, Start 22
+Job 4, Op 2: M4, Len 5, Start 25
+Job 4, Op 3: M5, Len 4, Start 32
+Job 4, Op 4: M0, Len 3, Start 36
+Job 4, Op 5: M3, Len 1, Start 39
+Job 5, Op 0: M1, Len 3, Start 0
+Job 5, Op 1: M3, Len 3, Start 3
+Job 5, Op 2: M5, Len 9, Start 6
+Job 5, Op 3: M0, Len 10, Start 15
+Job 5, Op 4: M4, Len 4, Start 54
+Job 5, Op 5: M2, Len 1, Start 58

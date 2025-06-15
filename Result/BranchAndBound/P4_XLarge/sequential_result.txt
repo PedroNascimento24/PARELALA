@@ -1,5 +1,0 @@
-Sequential Branch & Bound Results
-Input file: ../Data/4_XLarge_sample.jss
-Jobs: 50, Machines: 20, Operations per job: 20
-Best makespan: 40720
-Execution time: 1.928000 seconds

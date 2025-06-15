@@ -34,7 +34,7 @@ Get-ChildItem -Path "../Algorithms" -Filter "*.exe" -Recurse -ErrorAction Silent
 Write-Host "SUCCESS: Old executables removed" -ForegroundColor Green
 
 # Build counters
-$totalBuilds = 12  # Greedy Sequential, Greedy Parallel, SPT Sequential, SPT Parallel, LPT Sequential, LPT Parallel, MOR Sequential, MOR Parallel, SB Sequential, SB Parallel, BB Sequential, BB Parallel
+$totalBuilds = 6  # Greedy Sequential, Greedy Parallel, SB Sequential, SB Parallel, BB Sequential, BB Parallel
 $currentBuild = 0
 $successfulBuilds = 0
 $failedBuilds = 0
@@ -74,99 +74,6 @@ else {
 
 Pop-Location
 
-Write-Host "`n=========================================" -ForegroundColor Magenta
-Write-Host "=== BUILDING HEURISTIC ALGORITHMS ===" -ForegroundColor Magenta
-Write-Host "=========================================" -ForegroundColor Magenta
-
-# Build SPT Sequential
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building SPT Sequential Algorithm..." -ForegroundColor White
-Push-Location "$PSScriptRoot/../Algorithms/SPT"
-$result = gcc -o jobshop_seq_spt.exe jobshop_seq_spt.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: SPT Sequential compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: SPT Sequential compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
-
-# Build SPT Parallel
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building SPT Parallel Algorithm..." -ForegroundColor White
-$result = gcc -fopenmp -o jobshop_par_spt.exe jobshop_par_spt.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: SPT Parallel compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: SPT Parallel compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
-Pop-Location
-
-# Build LPT Sequential
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building LPT Sequential Algorithm..." -ForegroundColor White
-Push-Location "$PSScriptRoot/../Algorithms/LPT"
-$result = gcc -o jobshop_seq_lpt.exe jobshop_seq_lpt.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: LPT Sequential compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: LPT Sequential compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
-
-# Build LPT Parallel
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building LPT Parallel Algorithm..." -ForegroundColor White
-$result = gcc -fopenmp -o jobshop_par_lpt.exe jobshop_par_lpt.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: LPT Parallel compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: LPT Parallel compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
-Pop-Location
-
-# Build MOR Sequential
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building MOR Sequential Algorithm..." -ForegroundColor White
-Push-Location "$PSScriptRoot/../Algorithms/MOR"
-$result = gcc -o jobshop_seq_mor.exe jobshop_seq_mor.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: MOR Sequential compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: MOR Sequential compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
-
-# Build MOR Parallel
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building MOR Parallel Algorithm..." -ForegroundColor White
-$result = gcc -fopenmp -o jobshop_par_mor.exe jobshop_par_mor.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: MOR Parallel compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: MOR Parallel compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
-Pop-Location
 
 Write-Host "`n===========================================" -ForegroundColor Magenta
 Write-Host "=== BUILDING SHIFTING BOTTLENECK ALGORITHMS ===" -ForegroundColor Magenta
@@ -254,12 +161,6 @@ Write-Host "`nVerifying built executables:" -ForegroundColor White
 $executables = @(
     @{Path = "$PSScriptRoot/../Algorithms/Greedy/jobshop_seq_greedy.exe"; Name = "Sequential Greedy" },
     @{Path = "$PSScriptRoot/../Algorithms/Greedy/jobshop_par_greedy.exe"; Name = "Parallel Greedy" },
-    @{Path = "$PSScriptRoot/../Algorithms/SPT/jobshop_seq_spt.exe"; Name = "SPT Sequential" },
-    @{Path = "$PSScriptRoot/../Algorithms/SPT/jobshop_par_spt.exe"; Name = "SPT Parallel" },
-    @{Path = "$PSScriptRoot/../Algorithms/LPT/jobshop_seq_lpt.exe"; Name = "LPT Sequential" },
-    @{Path = "$PSScriptRoot/../Algorithms/LPT/jobshop_par_lpt.exe"; Name = "LPT Parallel" },
-    @{Path = "$PSScriptRoot/../Algorithms/MOR/jobshop_seq_mor.exe"; Name = "MOR Sequential" },
-    @{Path = "$PSScriptRoot/../Algorithms/MOR/jobshop_par_mor.exe"; Name = "MOR Parallel" },
     @{Path = "$PSScriptRoot/../Algorithms/ShiftingBottleneck/jobshop_seq_sb.exe"; Name = "SB Sequential" },
     @{Path = "$PSScriptRoot/../Algorithms/ShiftingBottleneck/jobshop_par_sb.exe"; Name = "SB Parallel" },
     @{Path = "$PSScriptRoot/../Algorithms/BranchAndBound/jobshop_seq_bb.exe"; Name = "BB Sequential" },

@@ -2,5 +2,5 @@ Parallel Branch & Bound Results
 Input file: ../Data/2_Medium_sample.jss
 Jobs: 6, Machines: 6, Operations per job: 6
 Number of threads: 2
-Best makespan: 127
+Best makespan: 149
 Execution time: 0.002000 seconds

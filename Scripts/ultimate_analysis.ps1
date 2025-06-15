@@ -10,7 +10,7 @@ param(
     [switch]$QuickTest,
     [switch]$GenerateConfig,
     [switch]$CleanOnly,
-    [ValidateSet("Greedy", "SPT", "LPT", "MOR", "ShiftingBottleneck", "BranchAndBound", "")]
+    [ValidateSet("Greedy", "ShiftingBottleneck", "BranchAndBound", "")]
     [string]$AlgorithmFilter = "",
     [ValidateSet("Small", "Medium", "Large", "XLarge", "XXLarge", "XXXLarge", "P1_Small", "P2_Medium", "P3_Large", "P4_XLarge", "P5_XXLarge", "P6_XXXLarge", "")]
     [string]$DatasetFilter = ""
@@ -22,97 +22,88 @@ Write-Host "=============================================" -ForegroundColor Cyan
 
 # Enhanced default configuration with ALL algorithms and flexible settings
 $defaultConfig = @{
-    # Global settings
-    settings   = @{
-        repetitions     = 10000  # For timing accuracy
-        cleanBefore     = $true  # Clean previous results
-        generateReports = $true  # Generate comprehensive reports
-        verbose         = $true      # Detailed output        timeoutSeconds  = 300 # Per algorithm timeout
-    }
-    # All available algorithms
+    datasets   = @(
+        @{
+            ExpectedTime = "<100ms"
+            Category     = "P1_Small"
+            Name         = "1_Small_sample"
+            Size         = "3x3"
+        },
+        @{
+            ExpectedTime = "<200ms"
+            Category     = "P2_Medium"
+            Name         = "2_Medium_sample"
+            Size         = "6x6"
+        },
+        @{
+            ExpectedTime = "<5s"
+            Category     = "P3_Large"
+            Name         = "3_Big_sample"
+            Size         = "25x25"
+        },
+        @{
+            ExpectedTime = "<30s"
+            Category     = "P4_XLarge"
+            Name         = "4_XLarge_sample"
+            Size         = "50x20"
+        },
+        @{
+            ExpectedTime = "<2min"
+            Category     = "P5_XXLarge"
+            Name         = "5_XXLarge_sample"
+            Size         = "100x20"
+        },
+        @{
+            ExpectedTime = "<10min"
+            Category     = "P6_XXXLarge"
+            Name         = "6_XXXLarge_sample"
+            Size         = "100x100"
+        }
+    )
     algorithms = @{
         Greedy = @{
             description = "Earliest start time greedy heuristic"
             sequential  = @{
-                enabled    = $true
-                executable = "..\Algorithms\Greedy\jobshop_seq_greedy.exe"
+                executable = "..\\\\Algorithms\\\\Greedy\\\\jobshop_seq_greedy.exe"
+                enabled    = $false 
             }
             parallel    = @{
-                enabled      = $true
-                executable   = "..\Algorithms\Greedy\jobshop_par_greedy.exe"
-                threadCounts = @(1, 2, 4, 8, 16)  # Expanded thread testing
-            }
-        }
-        SPT = @{
-            description = "Shortest Processing Time first heuristic"
-            sequential  = @{
-                enabled    = $true
-                executable = "..\Algorithms\SPT\jobshop_seq_spt.exe"
-            }
-            parallel    = @{
-                enabled      = $true
-                executable   = "..\Algorithms\SPT\jobshop_par_spt.exe"
                 threadCounts = @(1, 2, 4, 8, 16)
-            }
-        }
-        LPT = @{
-            description = "Longest Processing Time first heuristic"
-            sequential  = @{
-                enabled    = $true
-                executable = "..\Algorithms\LPT\jobshop_seq_lpt.exe"
-            }
-            parallel    = @{
-                enabled      = $true
-                executable   = "..\Algorithms\LPT\jobshop_par_lpt.exe"
-                threadCounts = @(1, 2, 4, 8, 16)
-            }
-        }
-        MOR = @{
-            description = "Most Operations Remaining priority heuristic"
-            sequential  = @{
-                enabled    = $true
-                executable = "..\Algorithms\MOR\jobshop_seq_mor.exe"
-            }
-            parallel    = @{
-                enabled      = $true
-                executable   = "..\Algorithms\MOR\jobshop_par_mor.exe"
-                threadCounts = @(1, 2, 4, 8, 16)
-            }
-        }
-        ShiftingBottleneck = @{
-            description = "Shifting Bottleneck heuristic"
-            sequential  = @{
-                enabled    = $true
-                executable = "..\Algorithms\ShiftingBottleneck\jobshop_seq_sb.exe"
-            }
-            parallel    = @{
-                enabled      = $true
-                executable   = "..\Algorithms\ShiftingBottleneck\jobshop_par_sb.exe"
-                threadCounts = @(1, 2, 4, 8, 16)
+                executable   = "..\\\\Algorithms\\\\Greedy\\\\jobshop_par_greedy.exe"
+                enabled      = $false
             }
         }
         BranchAndBound = @{
             description = "Branch & Bound optimal search algorithm"
             sequential  = @{
-                enabled    = $true
-                executable = "..\Algorithms\BranchAndBound\jobshop_seq_bb_new.exe"
+                executable = "..\\\\Algorithms\\\\BranchAndBound\\\\jobshop_seq_bb.exe"
+                enabled    = $true 
             }
             parallel    = @{
-                enabled      = $true
-                executable   = "..\Algorithms\BranchAndBound\jobshop_par_bb_new.exe"
                 threadCounts = @(1, 2, 4, 8, 16)
+                executable   = "..\\\\Algorithms\\\\BranchAndBound\\\\jobshop_par_bb.exe"
+                enabled      = $true
+            }
+        }
+        ShiftingBottleneck = @{
+            description = "Shifting Bottleneck heuristic"
+            sequential  = @{
+                executable = "..\\\\Algorithms\\\\ShiftingBottleneck\\\\jobshop_seq_sb.exe"
+                enabled    = $true
+            }
+            parallel    = @{
+                threadCounts = @(1, 2, 4, 8, 16)
+                executable   = "..\\\\Algorithms\\\\ShiftingBottleneck\\\\jobshop_par_sb.exe"
+                enabled      = $true
             }
         }
     }
-    # Dataset configurations with expected performance hints
-    datasets   = @(
-        @{Name = "1_Small_sample"; Size = "3x3"; Category = "P1_Small"; ExpectedTime = "<100ms" },
-        @{Name = "2_Medium_sample"; Size = "6x6"; Category = "P2_Medium"; ExpectedTime = "<200ms" },  
-        @{Name = "3_Big_sample"; Size = "25x25"; Category = "P3_Large"; ExpectedTime = "<5s" },
-        @{Name = "4_XLarge_sample"; Size = "50x20"; Category = "P4_XLarge"; ExpectedTime = "<30s" },
-        @{Name = "5_XXLarge_sample"; Size = "100x20"; Category = "P5_XXLarge"; ExpectedTime = "<2min" },
-        @{Name = "6_XXXLarge_sample"; Size = "100x100"; Category = "P6_XXXLarge"; ExpectedTime = ">5min" }
-    )
+    settings   = @{
+        verbose         = $true
+        repetitions     = 10000 # Default repetitions, can be overridden by config file
+        generateReports = $true
+        cleanBefore     = $true
+    }
 }
 
 # Handle special modes first
