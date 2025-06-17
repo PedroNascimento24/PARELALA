@@ -2,11 +2,11 @@
 Dataset: P4_XLarge (50x20)
 Input File: Data/4_XLarge_sample.jss
 Output File: ..\Result\BranchAndBound\P4_XLarge\sequential_result.txt
-Execution Time: 1841.14ms
+Execution Time: 2706.92ms
 Makespan: 40720
 Operation Distribution: Jobs: 50, Total Ops: 1050, Avg Ops/Thread: 1050
 Algorithm: BranchAndBound Sequential
-Timestamp: 06/17/2025 21:43:45
+Timestamp: 06/17/2025 23:26:01
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 40720 time units

@@ -2,12 +2,12 @@
 Dataset: P3_Large (25x25)
 Input File: Data/3_Big_sample.jss
 Output File: ..\Result\BranchAndBound\P3_Large\parallel_8threads_result.txt
-Execution Time: 3409.13ms
+Execution Time: 3459.35ms
 Thread Count: 8
 Makespan: 2655
 Operation Distribution: Jobs: 25, Total Ops: 650, Avg Ops/Thread: 81.2
 Algorithm: BranchAndBound Parallel
-Timestamp: 06/17/2025 21:45:24
+Timestamp: 06/17/2025 23:25:40
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 2655 time units

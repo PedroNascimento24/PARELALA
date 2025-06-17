@@ -27,14 +27,17 @@ typedef struct {
 // Global variables
 Shop global_shop;
 int best_makespan = INT_MAX;
-BBNode node_stack[MAX_STACK_SIZE];
+typedef struct {
+    BBNode node;
+    ScheduleEntry schedule[MAX_SCHEDULE_ENTRIES];
+    int schedule_len;
+} StackEntry;
+
+StackEntry node_stack[MAX_STACK_SIZE];
 int stack_top = 0;
 
-// For schedule tracking
 ScheduleEntry best_schedule[MAX_SCHEDULE_ENTRIES];
 int best_schedule_len = 0;
-ScheduleEntry current_schedule[MAX_SCHEDULE_ENTRIES];
-int current_schedule_len = 0;
 
 // Initialize a node with empty schedule
 void initialize_node(BBNode* node) {
@@ -99,47 +102,48 @@ int calculate_makespan(BBNode* node) {
 }
 
 // Find next available operations and create child nodes
-void expand_node(BBNode* parent) {
+void expand_node(StackEntry* parent_entry) {
     for (int j = 0; j < global_shop.njobs; j++) {
-        int next_op = parent->job_progress[j];
+        int next_op = parent_entry->node.job_progress[j];
         
         // Check if this job has more operations to schedule
         if (next_op < global_shop.nops) {
-            // Create child node
-            BBNode child = *parent;
+            // Create child entry
+            StackEntry child_entry = *parent_entry;
+            BBNode* child = &child_entry.node;
             
             int machine = global_shop.plan[j][next_op].mach - 1; // Convert to 0-indexed
             int duration = global_shop.plan[j][next_op].len;
             
             // Calculate earliest start time
-            int earliest_start = child.machine_time[machine];
+            int earliest_start = child->machine_time[machine];
             
             // Consider job precedence constraint
             if (next_op > 0) {
                 int prev_machine = global_shop.plan[j][next_op-1].mach - 1;
-                if (child.machine_time[prev_machine] > earliest_start) {
-                    earliest_start = child.machine_time[prev_machine];
+                if (child->machine_time[prev_machine] > earliest_start) {
+                    earliest_start = child->machine_time[prev_machine];
                 }
             }
             
             // Update child node
-            child.job_progress[j]++;
-            child.machine_time[machine] = earliest_start + duration;
-            child.depth++;
-            child.lower_bound = calculate_lower_bound(&child);
+            child->job_progress[j]++;
+            child->machine_time[machine] = earliest_start + duration;
+            child->depth++;
+            child->lower_bound = calculate_lower_bound(child);
             
             // Add to stack if there's space and it's promising
-            if (stack_top < MAX_STACK_SIZE - 1 && child.lower_bound < best_makespan) {
-                node_stack[stack_top++] = child;
-                // Record the operation in the current schedule
-                if (current_schedule_len < MAX_SCHEDULE_ENTRIES) {
-                    current_schedule[current_schedule_len].job = j;
-                    current_schedule[current_schedule_len].op = next_op;
-                    current_schedule[current_schedule_len].machine = machine;
-                    current_schedule[current_schedule_len].start_time = earliest_start;
-                    current_schedule[current_schedule_len].duration = duration;
-                    current_schedule_len++;
+            if (stack_top < MAX_STACK_SIZE - 1 && child->lower_bound < best_makespan) {
+                // Record the operation in the child's schedule
+                if (child_entry.schedule_len < MAX_SCHEDULE_ENTRIES) {
+                    child_entry.schedule[child_entry.schedule_len].job = j;
+                    child_entry.schedule[child_entry.schedule_len].op = next_op;
+                    child_entry.schedule[child_entry.schedule_len].machine = machine;
+                    child_entry.schedule[child_entry.schedule_len].start_time = earliest_start;
+                    child_entry.schedule[child_entry.schedule_len].duration = duration;
+                    child_entry.schedule_len++;
                 }
+                node_stack[stack_top++] = child_entry;
             }
         }
     }
@@ -153,34 +157,37 @@ int solve_branch_and_bound() {
     root.lower_bound = calculate_lower_bound(&root);
     
     // Add root to stack
-    node_stack[stack_top++] = root;
+    StackEntry root_entry;
+    root_entry.node = root;
+    root_entry.schedule_len = 0;
+    node_stack[stack_top++] = root_entry;
     
     int nodes_explored = 0;
     
     while (stack_top > 0 && nodes_explored < 10000) { // Limit exploration for efficiency
-        BBNode current = node_stack[--stack_top];
+        StackEntry current_entry = node_stack[--stack_top];
+        BBNode* current = &current_entry.node;
         nodes_explored++;
         
         // Check if complete
-        if (is_complete(&current)) {
-            int makespan = calculate_makespan(&current);
+        if (is_complete(current)) {
+            int makespan = calculate_makespan(current);
             if (makespan < best_makespan) {
                 best_makespan = makespan;
-                // Save the current schedule as the best
-                memcpy(best_schedule, current_schedule, sizeof(ScheduleEntry) * current_schedule_len);
-                best_schedule_len = current_schedule_len;
+                memcpy(best_schedule, current_entry.schedule, sizeof(ScheduleEntry) * current_entry.schedule_len);
+                best_schedule_len = current_entry.schedule_len;
                 printf("New best makespan found: %d\n", best_makespan);
             }
             continue;
         }
         
         // Prune if lower bound exceeds current best
-        if (current.lower_bound >= best_makespan) {
+        if (current->lower_bound >= best_makespan) {
             continue;
         }
         
         // Expand node
-        expand_node(&current);
+        expand_node(&current_entry);
     }
     
     printf("Nodes explored: %d\n", nodes_explored);

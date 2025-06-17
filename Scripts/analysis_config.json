@@ -66,6 +66,10 @@
             "parallel": {
                 "enabled": true,
                 "threadCounts": [
+                    1,
+                    2,
+                    4,
+                    8,
                     16
                 ],
                 "executable": "..\\\\\\\\Algorithms\\\\\\\\BranchAndBound\\\\\\\\jobshop_par_bb.exe"

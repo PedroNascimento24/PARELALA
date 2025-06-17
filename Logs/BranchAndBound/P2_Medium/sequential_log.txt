@@ -2,11 +2,11 @@
 Dataset: P2_Medium (6x6)
 Input File: Data/2_Medium_sample.jss
 Output File: ..\Result\BranchAndBound\P2_Medium\sequential_result.txt
-Execution Time: 7ms
+Execution Time: 131.03ms
 Makespan: 149
 Operation Distribution: Jobs: 6, Total Ops: 42, Avg Ops/Thread: 42
 Algorithm: BranchAndBound Sequential
-Timestamp: 06/17/2025 21:45:32
+Timestamp: 06/17/2025 23:24:48
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 149 time units

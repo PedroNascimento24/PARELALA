@@ -207,12 +207,17 @@ if ($missingExecutables.Count -gt 0) {
 Write-Host "SUCCESS: All required executables found" -ForegroundColor Green
 
 # Clean previous results if enabled
-#if ($config.settings -and $config.settings.cleanBefore) {
-#    Write-Host "`n=== CLEANING PREVIOUS RESULTS ===" -ForegroundColor Magenta
-#    Get-ChildItem -Path "..\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-#    Get-ChildItem -Path "..\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-#    Write-Host "Previous results cleaned" -ForegroundColor Green
-#}
+# Output files will be overwritten by each test run.
+# No previous results are deleted; only the current test's output is replaced.
+# To enable cleaning, uncomment the block below.
+<# 
+if ($config.settings -and $config.settings.cleanBefore) {
+    Write-Host "`n=== CLEANING PREVIOUS RESULTS ===" -ForegroundColor Magenta
+    Get-ChildItem -Path "..\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem -Path "..\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+    Write-Host "Previous results cleaned" -ForegroundColor Green
+}
+#>
 
 # Create directory structure for all enabled algorithms
 Write-Host "`nCreating directory structure..." -ForegroundColor White

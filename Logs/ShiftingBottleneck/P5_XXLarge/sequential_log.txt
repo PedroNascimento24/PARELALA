@@ -6,7 +6,7 @@ Execution Time: 17ms
 Makespan: 10602
 Operation Distribution: Jobs: 2005, Total Ops: 18021, Avg Ops/Thread: 18021
 Algorithm: ShiftingBottleneck Sequential
-Timestamp: 06/17/2025 22:06:32
+Timestamp: 06/17/2025 22:46:29
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 10602 time units

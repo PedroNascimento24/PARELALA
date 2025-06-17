@@ -2,12 +2,12 @@
 Dataset: P2_Medium (6x6)
 Input File: Data/2_Medium_sample.jss
 Output File: ..\Result\BranchAndBound\P2_Medium\parallel_1threads_result.txt
-Execution Time: 15ms
+Execution Time: 38.09ms
 Thread Count: 1
 Makespan: 126
 Operation Distribution: Jobs: 6, Total Ops: 42, Avg Ops/Thread: 42
 Algorithm: BranchAndBound Parallel
-Timestamp: 06/17/2025 21:45:32
+Timestamp: 06/17/2025 23:24:48
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 126 time units

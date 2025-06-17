@@ -129,14 +129,17 @@ void expand_and_solve_parallel(BBNode* root, int num_threads) {
     for (int i = 0; i < child_count; i++) {
         BBNode* node_stack = (BBNode*)malloc(MAX_STACK_SIZE * sizeof(BBNode));
         int* schedule_len_stack = (int*)malloc(MAX_STACK_SIZE * sizeof(int));
-        if (!node_stack || !schedule_len_stack) {
-            free(node_stack); free(schedule_len_stack);
-            continue;
-        }
         ScheduleEntry* local_schedule = (ScheduleEntry*)malloc(MAX_SCHEDULE_ENTRIES * sizeof(ScheduleEntry));
         ScheduleEntry* local_best_schedule = (ScheduleEntry*)malloc(MAX_SCHEDULE_ENTRIES * sizeof(ScheduleEntry));
-        if (!local_schedule || !local_best_schedule) {
+        // Add a stack to hold a copy of the schedule for each node
+        ScheduleEntry** schedule_stack = (ScheduleEntry**)malloc(MAX_STACK_SIZE * sizeof(ScheduleEntry*));
+        for (int s = 0; s < MAX_STACK_SIZE; s++) {
+            schedule_stack[s] = (ScheduleEntry*)malloc(MAX_SCHEDULE_ENTRIES * sizeof(ScheduleEntry));
+        }
+        if (!node_stack || !schedule_len_stack || !local_schedule || !local_best_schedule || !schedule_stack) {
             free(node_stack); free(schedule_len_stack); free(local_schedule); free(local_best_schedule);
+            for (int s = 0; s < MAX_STACK_SIZE; s++) free(schedule_stack[s]);
+            free(schedule_stack);
             continue;
         }
         int stack_top = 0;
@@ -144,9 +147,7 @@ void expand_and_solve_parallel(BBNode* root, int num_threads) {
         int local_best_makespan = INT_MAX;
         int local_best_schedule_len = 0;
         int nodes_explored = 0;
-        node_stack[stack_top] = children[i];
-        schedule_len_stack[stack_top++] = local_schedule_len;
-        // Defensive: check job_indices[i] is valid
+        // --- Record the first scheduled operation for this child ---
         int opidx = root->job_progress[job_indices[i]];
         local_schedule[local_schedule_len].job = job_indices[i];
         local_schedule[local_schedule_len].op = opidx;
@@ -154,14 +155,16 @@ void expand_and_solve_parallel(BBNode* root, int num_threads) {
         local_schedule[local_schedule_len].start_time = children[i].machine_time[local_schedule[local_schedule_len].machine] - global_shop.plan[job_indices[i]][opidx].len;
         local_schedule[local_schedule_len].duration = global_shop.plan[job_indices[i]][opidx].len;
         local_schedule_len++;
+        memcpy(schedule_stack[stack_top], local_schedule, sizeof(ScheduleEntry) * local_schedule_len);
+        node_stack[stack_top] = children[i];
+        schedule_len_stack[stack_top++] = local_schedule_len;
         while (stack_top > 0 && nodes_explored < MAX_NODES_EXPLORED) {
             BBNode current = node_stack[--stack_top];
             local_schedule_len = schedule_len_stack[stack_top];
+            memcpy(local_schedule, schedule_stack[stack_top], sizeof(ScheduleEntry) * local_schedule_len);
             nodes_explored++;
-            // Check if complete
             if (is_complete(&current)) {
                 int makespan = calculate_makespan(&current);
-                // printf("[DEBUG][OMP][Thread %d] Found complete solution with makespan %d\n", omp_get_thread_num(), makespan);
                 if (makespan < local_best_makespan) {
                     local_best_makespan = makespan;
                     memcpy(local_best_schedule, local_schedule, sizeof(ScheduleEntry) * local_schedule_len);
@@ -169,12 +172,9 @@ void expand_and_solve_parallel(BBNode* root, int num_threads) {
                 }
                 continue;
             }
-            // Prune if lower bound exceeds current best
             if (current.lower_bound >= local_best_makespan) {
-                // printf("[DEBUG][OMP][Thread %d] Pruned node at depth %d with lower_bound %d (local best %d)\n", omp_get_thread_num(), current.depth, current.lower_bound, local_best_makespan);
                 continue;
             }
-            // Expand node
             for (int j = 0; j < global_shop.njobs; j++) {
                 int next_op = current.job_progress[j];
                 if (next_op < global_shop.nops) {
@@ -194,23 +194,30 @@ void expand_and_solve_parallel(BBNode* root, int num_threads) {
                     child.lower_bound = calculate_lower_bound(&child);
                     if (stack_top < MAX_STACK_SIZE - 1 && child.lower_bound < local_best_makespan) {
                         node_stack[stack_top] = child;
-                        memcpy(&local_schedule[local_schedule_len], &(ScheduleEntry){j, next_op, machine, earliest_start, duration}, sizeof(ScheduleEntry));
-                        schedule_len_stack[stack_top++] = local_schedule_len + 1;
+                        memcpy(schedule_stack[stack_top], local_schedule, sizeof(ScheduleEntry) * local_schedule_len);
+                        memcpy(&schedule_stack[stack_top][local_schedule_len], &(ScheduleEntry){j, next_op, machine, earliest_start, duration}, sizeof(ScheduleEntry));
+                        schedule_len_stack[stack_top] = local_schedule_len + 1;
+                        stack_top++;
                     }
                 }
             }
         }
-        printf("[OMP][Thread %d] Explored %d nodes. Local best makespan: %d\n", omp_get_thread_num(), nodes_explored, local_best_makespan);
-        // Update global best (critical section)
-        #pragma omp critical
-        {
-            if (local_best_makespan < best_makespan) {
-                best_makespan = local_best_makespan;
-                memcpy(best_schedule, local_best_schedule, sizeof(ScheduleEntry) * local_best_schedule_len);
-                best_schedule_len = local_best_schedule_len;
-                // printf("[OMP] New best makespan found: %d\n", best_makespan);
+        // Only update global best if a complete schedule was found
+        if (local_best_schedule_len == global_shop.njobs * global_shop.nops) {
+            printf("[DEBUG][OMP][Thread %d] Submitting complete schedule: makespan=%d\n", omp_get_thread_num(), local_best_makespan);
+            #pragma omp critical
+            {
+                if (local_best_makespan < best_makespan) {
+                    best_makespan = local_best_makespan;
+                    memcpy(best_schedule, local_best_schedule, sizeof(ScheduleEntry) * local_best_schedule_len);
+                    best_schedule_len = local_best_schedule_len;
+                }
             }
+        } else {
+            printf("[DEBUG][OMP][Thread %d] No complete schedule found in this thread. local_best_schedule_len=%d\n", omp_get_thread_num(), local_best_schedule_len);
         }
+        for (int s = 0; s < MAX_STACK_SIZE; s++) free(schedule_stack[s]);
+        free(schedule_stack);
         free(node_stack);
         free(schedule_len_stack);
         free(local_schedule);
@@ -253,7 +260,6 @@ int main(int argc, char* argv[]) {
         // Output per-job operation start times (as in Annex II)
         for (int j = 0; j < global_shop.njobs; j++) {
             for (int op = 0; op < global_shop.nops; op++) {
-                // Find the entry for this job/op
                 int found = 0;
                 for (int k = 0; k < best_schedule_len; k++) {
                     if (best_schedule[k].job == j && best_schedule[k].op == op) {
@@ -262,7 +268,20 @@ int main(int argc, char* argv[]) {
                         break;
                     }
                 }
-                if (!found) fprintf(file, "-1 "); // Not scheduled (should not happen)
+                if (!found) {
+                    // Defensive: try to find the earliest scheduled operation for this job
+                    int min_time = INT_MAX;
+                    for (int k = 0; k < best_schedule_len; k++) {
+                        if (best_schedule[k].job == j && best_schedule[k].start_time < min_time) {
+                            min_time = best_schedule[k].start_time;
+                        }
+                    }
+                    if (min_time != INT_MAX) {
+                        fprintf(file, "%d ", min_time);
+                    } else {
+                        fprintf(file, "-1 "); // Should not happen
+                    }
+                }
             }
             fprintf(file, "\n");
         }

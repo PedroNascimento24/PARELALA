@@ -2,12 +2,12 @@
 Dataset: P4_XLarge (50x20)
 Input File: Data/4_XLarge_sample.jss
 Output File: ..\Result\BranchAndBound\P4_XLarge\parallel_16threads_result.txt
-Execution Time: 12563.23ms
+Execution Time: 12597.55ms
 Thread Count: 16
 Makespan: 40508
 Operation Distribution: Jobs: 50, Total Ops: 1050, Avg Ops/Thread: 65.6
 Algorithm: BranchAndBound Parallel
-Timestamp: 06/17/2025 21:28:25
+Timestamp: 06/17/2025 23:29:14
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 40508 time units

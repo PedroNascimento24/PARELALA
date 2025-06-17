@@ -2,12 +2,12 @@
 Dataset: P1_Small (3x3)
 Input File: Data/1_Small_sample.jss
 Output File: ..\Result\BranchAndBound\P1_Small\parallel_2threads_result.txt
-Execution Time: 6ms
+Execution Time: 21ms
 Thread Count: 2
 Makespan: 13
 Operation Distribution: Jobs: 3, Total Ops: 12, Avg Ops/Thread: 6
 Algorithm: BranchAndBound Parallel
-Timestamp: 06/17/2025 21:45:40
+Timestamp: 06/17/2025 23:11:24
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 13 time units
