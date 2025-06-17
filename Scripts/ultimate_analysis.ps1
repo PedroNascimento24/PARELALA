@@ -121,14 +121,14 @@ if ($GenerateConfig) {
     exit 0
 }
 
-if ($CleanOnly) {
-    Write-Host "=== CLEANING MODE ===" -ForegroundColor Red
-    Get-ChildItem -Path "..\\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-    Get-ChildItem -Path ".\\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-    Remove-Item "comprehensive_analysis_report.txt" -ErrorAction SilentlyContinue
-    Write-Host "SUCCESS: All previous results cleaned" -ForegroundColor Green
-    exit 0
-}
+#if ($CleanOnly) {
+#    Write-Host "=== CLEANING MODE ===" -ForegroundColor Red
+#    Get-ChildItem -Path "..\\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+#    Get-ChildItem -Path ".\\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+#    Remove-Item "comprehensive_analysis_report.txt" -ErrorAction SilentlyContinue
+#    Write-Host "SUCCESS: All previous results cleaned" -ForegroundColor Green
+#    exit 0
+#}
 
 # Load or create configuration
 if (Test-Path $ConfigFile) {
@@ -207,12 +207,12 @@ if ($missingExecutables.Count -gt 0) {
 Write-Host "SUCCESS: All required executables found" -ForegroundColor Green
 
 # Clean previous results if enabled
-if ($config.settings -and $config.settings.cleanBefore) {
-    Write-Host "`n=== CLEANING PREVIOUS RESULTS ===" -ForegroundColor Magenta
-    Get-ChildItem -Path "..\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-    Get-ChildItem -Path "..\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-    Write-Host "Previous results cleaned" -ForegroundColor Green
-}
+#if ($config.settings -and $config.settings.cleanBefore) {
+#    Write-Host "`n=== CLEANING PREVIOUS RESULTS ===" -ForegroundColor Magenta
+#    Get-ChildItem -Path "..\Result" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+#    Get-ChildItem -Path "..\Logs" -Filter "*.txt" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+#    Write-Host "Previous results cleaned" -ForegroundColor Green
+#}
 
 # Create directory structure for all enabled algorithms
 Write-Host "`nCreating directory structure..." -ForegroundColor White

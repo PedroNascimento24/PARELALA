@@ -2,15 +2,15 @@
 Dataset: P5_XXLarge (100x20)
 Input File: Data/5_XXLarge_sample.jss
 Output File: ..\Result\ShiftingBottleneck\P5_XXLarge\parallel_8threads_result.txt
-Execution Time: 17.42ms
+Execution Time: 20.51ms
 Thread Count: 8
-Makespan: 10602
+Makespan: 10691
 Operation Distribution: Jobs: 2005, Total Ops: 18021, Avg Ops/Thread: 2252.6
 Algorithm: ShiftingBottleneck Parallel
-Timestamp: 06/17/2025 19:39:27
+Timestamp: 06/17/2025 22:06:32
 
 === RESULT ANALYSIS ===
-Total scheduling time (makespan): 10602 time units
+Total scheduling time (makespan): 10691 time units
 Thread utilization: 8 threads
 Jobs processed: 2005
 Total operations: 18021

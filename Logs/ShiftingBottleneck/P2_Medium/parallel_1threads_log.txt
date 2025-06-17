@@ -7,7 +7,7 @@ Thread Count: 1
 Makespan: 65
 Operation Distribution: Jobs: 41, Total Ops: 345, Avg Ops/Thread: 345
 Algorithm: ShiftingBottleneck Parallel
-Timestamp: 06/17/2025 19:39:27
+Timestamp: 06/17/2025 22:06:32
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 65 time units

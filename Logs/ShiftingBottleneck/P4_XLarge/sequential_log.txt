@@ -2,11 +2,11 @@
 Dataset: P4_XLarge (50x20)
 Input File: Data/4_XLarge_sample.jss
 Output File: ..\Result\ShiftingBottleneck\P4_XLarge\sequential_result.txt
-Execution Time: 9ms
+Execution Time: 9.51ms
 Makespan: 5738
 Operation Distribution: Jobs: 1005, Total Ops: 9021, Avg Ops/Thread: 9021
 Algorithm: ShiftingBottleneck Sequential
-Timestamp: 06/17/2025 19:39:26
+Timestamp: 06/17/2025 22:06:32
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 5738 time units

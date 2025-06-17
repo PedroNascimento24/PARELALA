@@ -131,7 +131,7 @@ else {
 # Build Branch & Bound Parallel
 $currentBuild++
 Write-Host "`n[$currentBuild/$totalBuilds] Building Branch & Bound Parallel Algorithm..." -ForegroundColor White
-$result = gcc -pthread -o jobshop_par_bb.exe jobshop_par_bb.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
+$result = gcc -fopenmp -o jobshop_par_bb.exe jobshop_par_bb.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "SUCCESS: Branch & Bound Parallel compiled successfully" -ForegroundColor Green
     $successfulBuilds++

@@ -1,0 +1,16 @@
+﻿=== BranchAndBound SEQUENTIAL ALGORITHM RESULTS ===
+Dataset: P6_XXXLarge (100x100)
+Input File: Data/6_XXXLarge_sample.jss
+Output File: ..\Result\BranchAndBound\P6_XXXLarge\sequential_result.txt
+Execution Time: 165315.2ms
+Makespan: 444316
+Operation Distribution: Jobs: 100, Total Ops: 10100, Avg Ops/Thread: 10100
+Algorithm: BranchAndBound Sequential
+Timestamp: 06/17/2025 21:50:12
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan): 444316 time units
+Algorithm efficiency: Sequential processing
+All operations executed in single thread
+Jobs processed: 100
+Total operations: 10100

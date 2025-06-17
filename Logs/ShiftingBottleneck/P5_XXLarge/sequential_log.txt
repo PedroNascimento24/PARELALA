@@ -2,11 +2,11 @@
 Dataset: P5_XXLarge (100x20)
 Input File: Data/5_XXLarge_sample.jss
 Output File: ..\Result\ShiftingBottleneck\P5_XXLarge\sequential_result.txt
-Execution Time: 15.51ms
+Execution Time: 17ms
 Makespan: 10602
 Operation Distribution: Jobs: 2005, Total Ops: 18021, Avg Ops/Thread: 18021
 Algorithm: ShiftingBottleneck Sequential
-Timestamp: 06/17/2025 19:39:26
+Timestamp: 06/17/2025 22:06:32
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 10602 time units
