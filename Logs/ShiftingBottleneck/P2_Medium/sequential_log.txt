@@ -2,11 +2,11 @@
 Dataset: P2_Medium (6x6)
 Input File: Data/2_Medium_sample.jss
 Output File: ..\Result\ShiftingBottleneck\P2_Medium\sequential_result.txt
-Execution Time: 6ms
+Execution Time: 5.01ms
 Makespan: 65
 Operation Distribution: Jobs: 41, Total Ops: 345, Avg Ops/Thread: 345
 Algorithm: ShiftingBottleneck Sequential
-Timestamp: 06/15/2025 17:16:37
+Timestamp: 06/17/2025 19:39:26
 
 === RESULT ANALYSIS ===
 Total scheduling time (makespan): 65 time units

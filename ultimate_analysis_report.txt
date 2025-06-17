@@ -1,0 +1,37 @@
+﻿========================================================================
+=== ULTIMATE JOB SHOP SCHEDULING ANALYSIS REPORT ===
+========================================================================
+Generated: 06/17/2025 19:38:59
+Configuration: analysis_config.json
+Total Tests Executed: 0
+
+=== ALGORITHM PERFORMANCE SUMMARY ===
+
+=== PERFORMANCE INSIGHTS ===
+
+This report compares the performance of different scheduling algorithms:
+* Makespan: Lower values indicate better scheduling efficiency
+* Execution Time: Algorithm computational performance
+* Operation Distribution: How work is divided among threads (for parallel implementations)
+
+=== ALGORITHM DESCRIPTIONS ===
+* Greedy: Earliest start time heuristic
+* SPT: Shortest Processing Time first
+* LPT: Longest Processing Time first  
+* MOR: Most Operations Remaining priority
+* ShiftingBottleneck: Shifting Bottleneck heuristic
+
+=== FILES GENERATED ===
+* Results: Result/[Algorithm]/[Category]/
+* Logs: Logs/[Algorithm]/[Category]/
+* Configuration: analysis_config.json
+
+=== USAGE EXAMPLES ===
+.\ultimate_analysis.ps1                    # Run all enabled algorithms
+.\ultimate_analysis.ps1 -QuickTest         # Quick test with small dataset only
+.\ultimate_analysis.ps1 -AlgorithmFilter SPT # Run only SPT algorithm
+.\ultimate_analysis.ps1 -DatasetFilter Small # Run only small dataset
+.\ultimate_analysis.ps1 -CleanOnly         # Clean all previous results
+.\ultimate_analysis.ps1 -GenerateConfig    # Generate fresh config file
+
+========================================================================

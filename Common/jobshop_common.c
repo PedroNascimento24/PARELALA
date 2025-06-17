@@ -248,19 +248,6 @@ void save_result_par(const char *filename, ParallelShop *shop) {
     printf("Parallel results saved to %s\n", filename);
 }
 
-// Note: parallel_schedule is usually implemented in the specific algorithm\'s parallel .c file (e.g., jobshop_par_greedy.c)
-// So, a generic implementation here might not be appropriate unless it\'s a very simple dispatcher.
-// For now, providing a placeholder.
-/*
-int parallel_schedule(ParallelShop *shop, int num_threads, int should_log) {
-    // Placeholder: This function would typically be algorithm-specific.
-    // It might call a parallel version of an algorithm like greedy_schedule_par, spt_schedule_par etc.
-    printf("parallel_schedule called (placeholder) with %d threads. Logging: %d\\n", num_threads, should_log);
-    // Example: if (strcmp(algorithm_name, "Greedy") == 0) greedy_schedule_par(shop, num_threads, should_log);
-    return 0; // Return makespan or status
-}
-*/
-
 void reset_plan_par(ParallelShop *shop) {
     for (int i = 0; i < shop->njobs; ++i) {
         for (int k = 0; k < shop->nops; ++k) {
@@ -395,43 +382,3 @@ void get_result_path(char* path_buffer, const char* algorithm, const char* size_
     snprintf(path_buffer, 1024, "../../Results/%s/%s/%s_results.txt", // Standardized result filename
              algorithm, size_category, basename);
 }
-
-// Example of a simple greedy scheduler (can be moved to its own file or kept here if truly common)
-// This is just a conceptual placeholder if `greedy_schedule` was meant to be common.
-// Typically, each algorithm (Greedy, SPT, etc.) has its own .c file.
-/*
-void greedy_schedule(Shop *shop) {
-    printf("greedy_schedule called (common placeholder) - this should ideally be in its own algo file.\\n");
-    // Initialize all start times to -1 (not scheduled)
-    reset_plan_seq(shop);
-
-    for (int j = 0; j < shop->njobs; ++j) {
-        int last_op_finish_time_for_job = 0;
-        for (int op_idx = 0; op_idx < shop->nops; ++op_idx) {
-            int current_mach = shop->plan[j][op_idx].mach;
-            int current_len = shop->plan[j][op_idx].len;
-            
-            // Earliest this operation can start due to job precedence
-            int earliest_due_to_job = last_op_finish_time_for_job;
-            
-            // Find earliest slot on the machine
-            int machine_available_time = 0; // Simplified: find actual earliest free time on machine
-            for(int prev_j=0; prev_j < shop->njobs; ++prev_j) {
-                for(int prev_op=0; prev_op < shop->nops; ++prev_op) {
-                    if(shop->plan[prev_j][prev_op].mach == current_mach && shop->plan[prev_j][prev_op].stime != -1) {
-                        int busy_until = shop->plan[prev_j][prev_op].stime + shop->plan[prev_j][prev_op].len;
-                        if (busy_until > machine_available_time) {
-                            machine_available_time = busy_until;
-                        }
-                    }
-                }
-            }
-
-            int start_time = (earliest_due_to_job > machine_available_time) ? earliest_due_to_job : machine_available_time;
-            
-            shop->plan[j][op_idx].stime = start_time;
-            last_op_finish_time_for_job = start_time + current_len;
-        }
-    }
-}
-*/

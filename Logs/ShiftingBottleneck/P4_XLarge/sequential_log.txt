@@ -1,0 +1,16 @@
+﻿=== ShiftingBottleneck SEQUENTIAL ALGORITHM RESULTS ===
+Dataset: P4_XLarge (50x20)
+Input File: Data/4_XLarge_sample.jss
+Output File: ..\Result\ShiftingBottleneck\P4_XLarge\sequential_result.txt
+Execution Time: 9ms
+Makespan: 5738
+Operation Distribution: Jobs: 1005, Total Ops: 9021, Avg Ops/Thread: 9021
+Algorithm: ShiftingBottleneck Sequential
+Timestamp: 06/17/2025 19:39:26
+
+=== RESULT ANALYSIS ===
+Total scheduling time (makespan): 5738 time units
+Algorithm efficiency: Sequential processing
+All operations executed in single thread
+Jobs processed: 1005
+Total operations: 9021

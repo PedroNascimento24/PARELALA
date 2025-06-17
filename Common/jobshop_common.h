@@ -90,7 +90,6 @@ void dump_logs_seq(Shop *shop, const char *basename);
 // Parallel version functions
 int load_problem_par(const char *filename, ParallelShop *shop);
 void save_result_par(const char *filename, ParallelShop *shop);
-int parallel_schedule(ParallelShop *shop, int num_threads, int should_log);
 void reset_plan_par(ParallelShop *shop);
 void dump_logs_par(ParallelShop *shop, int num_threads, const char *basename);
 
