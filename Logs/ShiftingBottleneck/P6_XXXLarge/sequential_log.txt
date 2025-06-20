@@ -2,14 +2,14 @@
 Dataset: P6_XXXLarge (100x100)
 Input File: Data/6_XXXLarge_sample.jss
 Output File: ..\Result\ShiftingBottleneck\P6_XXXLarge\sequential_result.txt
-Execution Time: 261.1ms
-Makespan: 18544
+Execution Time: 24530.22ms
+Makespan: 28521
 Operation Distribution: Jobs: 10005, Total Ops: 90021, Avg Ops/Thread: 90021
 Algorithm: ShiftingBottleneck Sequential
-Timestamp: 06/17/2025 22:46:29
+Timestamp: 06/20/2025 15:51:18
 
 === RESULT ANALYSIS ===
-Total scheduling time (makespan): 18544 time units
+Total scheduling time (makespan): 28521 time units
 Algorithm efficiency: Sequential processing
 All operations executed in single thread
 Jobs processed: 10005

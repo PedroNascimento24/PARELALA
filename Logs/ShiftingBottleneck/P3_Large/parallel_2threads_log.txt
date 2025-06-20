@@ -2,15 +2,15 @@
 Dataset: P3_Large (25x25)
 Input File: Data/3_Big_sample.jss
 Output File: ..\Result\ShiftingBottleneck\P3_Large\parallel_2threads_result.txt
-Execution Time: 10ms
+Execution Time: 43.05ms
 Thread Count: 2
-Makespan: 362
+Makespan: 356
 Operation Distribution: Jobs: 630, Total Ops: 5646, Avg Ops/Thread: 2823
 Algorithm: ShiftingBottleneck Parallel
-Timestamp: 06/17/2025 22:46:29
+Timestamp: 06/20/2025 15:51:18
 
 === RESULT ANALYSIS ===
-Total scheduling time (makespan): 362 time units
+Total scheduling time (makespan): 356 time units
 Thread utilization: 2 threads
 Jobs processed: 630
 Total operations: 5646

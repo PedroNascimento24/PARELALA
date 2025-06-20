@@ -2,15 +2,15 @@
 Dataset: P6_XXXLarge (100x100)
 Input File: Data/6_XXXLarge_sample.jss
 Output File: ..\Result\ShiftingBottleneck\P6_XXXLarge\parallel_4threads_result.txt
-Execution Time: 242.08ms
+Execution Time: 24291.77ms
 Thread Count: 4
-Makespan: 18670
+Makespan: 28572
 Operation Distribution: Jobs: 10005, Total Ops: 90021, Avg Ops/Thread: 22505.2
 Algorithm: ShiftingBottleneck Parallel
-Timestamp: 06/17/2025 22:46:31
+Timestamp: 06/20/2025 15:52:34
 
 === RESULT ANALYSIS ===
-Total scheduling time (makespan): 18670 time units
+Total scheduling time (makespan): 28572 time units
 Thread utilization: 4 threads
 Jobs processed: 10005
 Total operations: 90021
