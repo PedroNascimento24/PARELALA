@@ -65,33 +65,15 @@ typedef struct {
     int nlogs;                    // Number of log entries
 } Shop;
 
-// Shop structure for parallel version (using static arrays to comply with PDF restrictions)
-typedef struct {
-    int njobs;                    // Number of jobs
-    int nmachs;                   // Number of machines
-    int nops;                     // Number of operations per job
-    Step plan[JMAX][OPMAX];       // Static allocation: [job][operation]
-    ThreadLog tlogs[TMAX][LOGMAX]; // Static allocation: [thread][log_entry]
-    int tlogc[TMAX];             // Log count per thread
-} ParallelShop;
-
 // Common function declarations
 void make_logs_dir(void);
 int find_slot_seq(Shop *shop, int mach, int len, int earliest_start);
-int find_slot_par(ParallelShop *shop, int mach, int len, int earliest_start);
 
 // Sequential version functions
 int load_problem_seq(const char *filename, Shop *shop);
 void save_result_seq(const char *filename, Shop *shop);
-void greedy_schedule(Shop *shop);
 void reset_plan_seq(Shop *shop);
 void dump_logs_seq(Shop *shop, const char *basename);
-
-// Parallel version functions
-int load_problem_par(const char *filename, ParallelShop *shop);
-void save_result_par(const char *filename, ParallelShop *shop);
-void reset_plan_par(ParallelShop *shop);
-void dump_logs_par(ParallelShop *shop, int num_threads, const char *basename);
 
 // Common utility functions
 char* extract_basename(const char *filepath);

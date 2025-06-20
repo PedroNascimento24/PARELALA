@@ -34,46 +34,13 @@ Get-ChildItem -Path "../Algorithms" -Filter "*.exe" -Recurse -ErrorAction Silent
 Write-Host "SUCCESS: Old executables removed" -ForegroundColor Green
 
 # Build counters
-$totalBuilds = 6  # Greedy Sequential, Greedy Parallel, SB Sequential, SB Parallel, BB Sequential, BB Parallel
+$totalBuilds = 4 # SB Sequential, SB Parallel, BB Sequential, BB Parallel
 $currentBuild = 0
 $successfulBuilds = 0
 $failedBuilds = 0
 
-Write-Host "`n=========================================" -ForegroundColor Magenta
-Write-Host "=== BUILDING GREEDY ALGORITHMS ===" -ForegroundColor Magenta
-Write-Host "=========================================" -ForegroundColor Magenta
-
-# Build Greedy Sequential
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building Greedy Sequential Algorithm..." -ForegroundColor White
-Push-Location "$PSScriptRoot/../Algorithms/Greedy"
-$result = gcc -o jobshop_seq_greedy.exe jobshop_seq_greedy.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: Greedy Sequential compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: Greedy Sequential compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
-
-# Build Greedy Parallel
-$currentBuild++
-Write-Host "`n[$currentBuild/$totalBuilds] Building Greedy Parallel Algorithm..." -ForegroundColor White
-$result = gcc -fopenmp -o jobshop_par_greedy.exe jobshop_par_greedy.c "$CommonCFile" -I"$CommonHFileDir" -std=c99 -O2 -Wall -lm 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "SUCCESS: Greedy Parallel compiled successfully" -ForegroundColor Green
-    $successfulBuilds++
-}
-else {
-    Write-Host "ERROR: Greedy Parallel compilation failed" -ForegroundColor Red
-    Write-Host $result -ForegroundColor Red
-    $failedBuilds++
-}
 
 Pop-Location
-
 
 Write-Host "`n===========================================" -ForegroundColor Magenta
 Write-Host "=== BUILDING SHIFTING BOTTLENECK ALGORITHMS ===" -ForegroundColor Magenta
@@ -159,8 +126,6 @@ Write-Host "  -> Success rate: $successRate%" -ForegroundColor White
 # Verify executables exist
 Write-Host "`nVerifying built executables:" -ForegroundColor White
 $executables = @(
-    @{Path = "$PSScriptRoot/../Algorithms/Greedy/jobshop_seq_greedy.exe"; Name = "Sequential Greedy" },
-    @{Path = "$PSScriptRoot/../Algorithms/Greedy/jobshop_par_greedy.exe"; Name = "Parallel Greedy" },
     @{Path = "$PSScriptRoot/../Algorithms/ShiftingBottleneck/jobshop_seq_sb.exe"; Name = "SB Sequential" },
     @{Path = "$PSScriptRoot/../Algorithms/ShiftingBottleneck/jobshop_par_sb.exe"; Name = "SB Parallel" },
     @{Path = "$PSScriptRoot/../Algorithms/BranchAndBound/jobshop_seq_bb.exe"; Name = "BB Sequential" },

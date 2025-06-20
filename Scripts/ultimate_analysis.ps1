@@ -10,7 +10,7 @@ param(
     [switch]$QuickTest,
     [switch]$GenerateConfig,
     [switch]$CleanOnly,
-    [ValidateSet("Greedy", "ShiftingBottleneck", "BranchAndBound", "")]
+    [ValidateSet("ShiftingBottleneck", "BranchAndBound", "")]
     [string]$AlgorithmFilter = "",
     [ValidateSet("Small", "Medium", "Large", "XLarge", "XXLarge", "XXXLarge", "P1_Small", "P2_Medium", "P3_Large", "P4_XLarge", "P5_XXLarge", "P6_XXXLarge", "")]
     [string]$DatasetFilter = ""
@@ -61,18 +61,6 @@ $defaultConfig = @{
         }
     )
     algorithms = @{
-        Greedy = @{
-            description = "Earliest start time greedy heuristic"
-            sequential  = @{
-                executable = "..\\\\Algorithms\\\\Greedy\\\\jobshop_seq_greedy.exe"
-                enabled    = $false 
-            }
-            parallel    = @{
-                threadCounts = @(1, 2, 4, 8, 16)
-                executable   = "..\\\\Algorithms\\\\Greedy\\\\jobshop_par_greedy.exe"
-                enabled      = $false
-            }
-        }
         BranchAndBound = @{
             description = "Branch & Bound optimal search algorithm"
             sequential  = @{
